@@ -128,3 +128,84 @@ dist
 .yarn/build-state.yml
 .yarn/install-state.gz
 .pnp.*
+
+
+# PostgreSQL SECTION
+#===============================#
+# PostgreSQL data directory
+/data/
+
+# PostgreSQL configuration files
+*.conf
+postgresql.conf
+pg_hba.conf
+pg_ident.conf
+
+# PostgreSQL log files
+*.log
+pg_log/
+postgresql-*.log
+
+# PostgreSQL dump files
+*.dump
+*.sql
+*.backup
+*.bak
+
+# PostgreSQL binary files
+*.bin
+
+# PostgreSQL write-ahead logging
+pg_xlog/
+pg_wal/
+
+# PostgreSQL transaction logs
+pg_clog/
+pg_xact/
+
+# PostgreSQL statistics
+pg_stat_tmp/
+pg_stat/
+
+# PostgreSQL base backup files
+base/
+
+# PostgreSQL multixact files
+pg_multixact/
+
+# PostgreSQL notification files
+pg_notify/
+
+# PostgreSQL commit timestamp files
+pg_commit_ts/
+
+# PostgreSQL subtrans files
+pg_subtrans/
+
+# PostgreSQL temporary files
+pgsql_tmp/
+*.pid
+postmaster.pid
+postmaster.opts
+
+# PostgreSQL tablespace
+pg_tblspc/
+
+# PostgreSQL version specific files
+PG_VERSION
+
+# PostgreSQL replication files
+pg_replslot/
+pg_serial/
+pg_snapshots/
+
+# Database dumps directory
+dumps/
+
+# Custom backup directory
+backups/
+
+# Environment variables
+.env
+*.env
+.env.*
