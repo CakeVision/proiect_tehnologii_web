@@ -28,7 +28,7 @@ pkgs.mkShell {
 
     export PGDATA=$NIX_SHELL_DIR/db
     export PGHOST=$PGDATA   # Set host to the data directory
-    export PGDATABASE=$(whoami)
+    export PGDATABASE=TaskAppDb
 
     ######################################################################
     # Clean up after exiting the Nix shell using `trap`.                 #
