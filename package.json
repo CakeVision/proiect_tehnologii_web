@@ -8,7 +8,8 @@
     "build": "tsc -b && vite build",
     "lint": "eslint .",
     "preview": "vite preview",
-    "orm": "tsx ./backend/models/index.ts"
+    "orm": "tsx ./backend/modelsClass/index.ts",
+    "server": "tsx ./backend/server.ts"
   },
   "dependencies": {
     "bcrypt": "^5.1.1",

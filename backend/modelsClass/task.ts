@@ -1,6 +1,8 @@
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
 // import { Task } from '../models';
 import { Model, DataTypes, Sequelize } from 'sequelize';
+import {User} from './user'
+import {Assignment} from './assignments'
 
 
 interface TaskAttributes {
@@ -53,27 +55,9 @@ class Task extends Model implements TaskAttributes {
     }
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     static associate(models: any) {
-        
+        Task.belongsTo(User, { foreignKey: 'id_creator' });
+        Task.belongsToMany(User, { through: Assignment, foreignKey: 'task_id' });
     }
 }
 
 export {Task, TaskAttributes}
-
-// task_id: {
-//     type: DataTypes.INTEGER,
-//     primaryKey: true,
-//     autoIncrement: true,
-//     field: 'task_id'
-//   },
-//   id_creator: {
-//     type: DataTypes.INTEGER,
-//     allowNull: false
-//   },
-//   title: {
-//     type: DataTypes.STRING(250),
-//     allowNull: false
-//   }
-// }, {
-//   tableName: 'Tasks',
-//   timestamps: false
-// }

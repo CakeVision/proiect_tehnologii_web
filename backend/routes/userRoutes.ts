@@ -1,16 +1,21 @@
 import express from 'express';
-import User from '../models/user.js';
+import {User} from '../modelsClass/user';
 
 const router = express.Router();
 
 // Get all users
 router.get('/', async (req, res) => {
   try {
+    console.log("Attempting to fetch users...");
     const users = await User.findAll();
-    console.log(users)
+    console.log("Users fetched:", users);
     res.json(users);
   } catch (error) {
-    res.status(500).json({ error: error.message });
+    console.error("Error fetching users:", error);
+    res.status(500).json({ 
+      error: error.message,
+      stack: process.env.NODE_ENV === 'development' ? error.stack : undefined 
+    });
   }
 });
 
@@ -27,7 +32,7 @@ router.post('/', async (req, res) => {
 // Get user by ID
 router.get('/:id', async (req, res) => {
   try {
-    const user = await User.findByPk(req.params.id);
+    const user = await User.findOne({where : {id:req.params.id}});
     if (user) {
       res.json(user);
     } else {
