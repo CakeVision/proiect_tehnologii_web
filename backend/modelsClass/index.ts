@@ -6,28 +6,27 @@ import { Assignment } from './assignments';
 console.log("Hello")
 
 const sequelize = new Sequelize({
-    host: 'localhost',
-    port: 5432,
     dialect: 'postgres',
-    password : undefined,
-    database: 'TaskAppDb',
+    host: 'localhost', // or your database host
+    username: 'postgres',
+    password: 'pass',
+    database: 'techweb',
     logging: (msg) => console.log(`Sequelize: ${msg}`),
     define: {
         timestamps: true // this will add createdAt and updatedAt fields
     }
 });
+
+
 const models = {
-    User,
-    Task,
-    Assignment
-}
-// Initialize models
-const user= User.initModel(sequelize);
-const task = Task.initModel(sequelize);
+    User: User.initModel(sequelize),
+    Task: Task.initModel(sequelize),
+    Assignment: Assignment.initModel(sequelize),
+};
 
 // Set up associations
 User.associate(models);
-Task.associate(user);
+Task.associate(models);
 
 // Sync database
 async function syncDatabase() {
