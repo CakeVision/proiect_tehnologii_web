@@ -2,42 +2,47 @@ import fs from 'fs'
 import path from 'path';
 import { Sequelize } from 'sequelize';
 import process from 'process';
-import * as config from '../config/config.json';
+import { Task } from './task';
+import { User } from './user';
 
-const basename = path.basename(import.meta.url);
-const env = process.env.NODE_ENV || 'development';
-const envConfig = config[env];const db = {};
 
-let sequelize;
-if (config.use_env_variable) {
-  sequelize = new Sequelize(process.env[config.use_env_variable], config);
-} else {
-  sequelize = new Sequelize(config.database, config.username, config.password, config);
-}
-
-fs
-  .readdirSync(__dirname)
-  .filter(file => {
-    return (
-      file.indexOf('.') !== 0 &&
-      file !== basename &&
-      file.slice(-3) === '.js' &&
-      file.indexOf('.test.js') === -1
-    );
-  })
-  .forEach(file => {
-    const model = require(path.join(__dirname, file))(sequelize, Sequelize.DataTypes);
-    db[model.name] = model;
-  });
-
-Object.keys(db).forEach(modelName => {
-  if (db[modelName].associate) {
-    db[modelName].associate(db);
-  }
+const sequelize = new Sequelize({
+    dialect: 'postgres',
+    host: 'localhost', // or your database host
+    username: 'your_username',
+    password: 'your_password',
+    database: 'your_database',
+    logging: console.log, // set to false to disable logging
+    define: {
+        timestamps: true // this will add createdAt and updatedAt fields
+    }
 });
 
-db.sequelize = sequelize;
-db.Sequelize = Sequelize;
+// Initialize models
+User.initModel(sequelize);
+Task.initModel(sequelize);
 
-sequelize.sync({ force: true })
-module.exports = db;
+// Set up associations
+User.associate({ Task });
+Task.associate({ User });
+
+// Sync database
+async function syncDatabase() {
+    try {
+        // force: true will drop tables if they exist
+        // alter: true will alter existing tables to match the model
+        // Using neither will only create tables if they don't exist
+        await sequelize.sync({ 
+            // force: true  // uncomment to drop and recreate tables
+            // alter: true  // uncomment to alter existing tables
+        });
+        console.log('Database synchronized successfully.');
+    } catch (error) {
+        console.error('Error synchronizing database:', error);
+    }
+}
+
+// Run the sync
+syncDatabase();
+
+export { sequelize };
