@@ -1,6 +1,7 @@
 import express from 'express';
 import dotenv from 'dotenv';
 import userRoutes from './routes/userRoutes.js';
+import { syncDatabase } from './modelsClass/index.js';
 
 dotenv.config();
 
@@ -15,5 +16,12 @@ app.use('/test', router.get('/', async (req, res ) => {
 }))
 app.use('/api/users', userRoutes)
 app.listen(PORT, () => {
+    syncDatabase()
+    .then(() => {
+      console.log('Database connection established successfully.');
+    })
+    .catch(err => {
+      console.error('Unable to connect to the database:', err);
+    });
     console.log(`Server is running on port ${PORT}`);
 });

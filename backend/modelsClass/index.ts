@@ -31,11 +31,12 @@ Task.associate(models);
 async function create_mock_data(){
 
         // Insert Administrator
-        const admin = await User.create({
+        await User.create({
             user_id: 1,
+            name: "gigel",
+            user_type: 'Administrator',
             email: 'admin@company.com',
             password: 'hashed_password_1',
-            user_type: 'Administrator',
             manager_id: null
           });
       
@@ -169,7 +170,7 @@ async function create_mock_data(){
 }
 
 // Sync database
-async function syncDatabase() {
+ async function syncDatabase() {
     try {
         // force: true will drop tables if they exist
         // alter: true will alter existing tables to match the model
@@ -194,6 +195,6 @@ async function syncDatabase() {
 }
 
 // Run the sync
-syncDatabase();
+// syncDatabase();
 
-export { sequelize };
+export { sequelize,syncDatabase };

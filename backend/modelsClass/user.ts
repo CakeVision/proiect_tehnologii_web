@@ -13,7 +13,7 @@ enum UserType {
 interface UserAttributes {
     id : number;
     name: string;
-    userType: string;
+    user_type: string;
     email: string;
     password: string;
 }
@@ -28,7 +28,7 @@ interface UserPublicAttributes extends Omit<UserAttributes, 'password' | 'refres
 class User extends Model implements UserAttributes {
     public id!: number;
     public name!: string;
-    public userType!: string;
+    public user_type!: string;
     public email!: string;
     public password!: string;
 
@@ -53,7 +53,7 @@ class User extends Model implements UserAttributes {
               },
               name: {
                 type: DataTypes.STRING(100),
-                allowNull: true,
+                allowNull: false,
                 field: 'name'
               },
               email: {
@@ -69,12 +69,11 @@ class User extends Model implements UserAttributes {
                 type: DataTypes.STRING(100),
                 allowNull: false
               },
-              userType: {
+              user_type: {
                 type: DataTypes.STRING(50),
-                allowNull: true,
-                validate: {
-                    isIn: [Object.values(UserType)]
-                }
+                allowNull: false,
+                field: "user_type",
+                
               },
               
             },{
@@ -97,15 +96,6 @@ class User extends Model implements UserAttributes {
     //TODO: Add association with Task
      // eslint-disable-next-line @typescript-eslint/no-explicit-any
      static associate(models: any) {
-        User.belongsTo(User, {
-            as: 'manager',
-            foreignKey: 'manager_id'
-        }); 
-        User.hasMany(User, {
-            as: 'subordinates',
-            foreignKey: 'manager_id'
-        });
-
         User.hasMany(Task, {
             foreignKey: 'userId',
             as: 'tasks'
