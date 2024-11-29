@@ -1,33 +1,37 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
-import express, { Router, Request, Response } from 'express';
+import express, { Router} from 'express';
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
 // import { Task } from '../models';
 import { Model, DataTypes, Sequelize } from 'sequelize';
+import {Task} from './task.ts'
 
 const router: Router = express.Router();
 
-interface user_attributes {
+enum UserType {
+    USER = 'user',
+    MANAGER = 'manager',
+    ADMIN = 'admin',
+}
+
+interface UserAttributes {
     id : number;
+    name: string;
+    userType: string;
     email: string;
     password: string;
-
 }
 
-interface task_attribute{
-    id: number;
-    description: string;
-}
-  
-interface UserCreationAttributes extends Omit<user_attributes, 'id' | 'createdAt' | 'updatedAt'> {
+interface UserCreationAttributes extends Omit<UserAttributes, 'id' | 'createdAt' | 'updatedAt'> {
     password: string;
 }
 
-interface UserPublicAttributes extends Omit<user_attributes, 'password' | 'refreshToken'> {
-    id?: number;
-}
+// eslint-disable-next-line @typescript-eslint/no-empty-object-type
+interface UserPublicAttributes extends Omit<UserAttributes, 'password' | 'refreshToken'> {}
 
-class User extends Model<user_attributes, UserCreationAttributes> implements user_attributes {
+class User extends Model<UserAttributes, UserCreationAttributes> implements UserAttributes {
     public id!: number;
+    public name!: string;
+    public userType!: string;
     public email!: string;
     public password!: string;
 
@@ -43,27 +47,39 @@ class User extends Model<user_attributes, UserCreationAttributes> implements use
         return public_user
     }
     static initModel(sequelize: Sequelize): typeof User {
-        User.init(
-        {
+        User.init({
             id: {
-            type: DataTypes.INTEGER,
-            autoIncrement: true,
-            primaryKey: true,
-            },
-            email: {
-            type: DataTypes.STRING,
-            allowNull: false,
-            unique: true,
-            validate: {
-                isEmail: true,
-            },
-            },
-            password: {
-            type: DataTypes.STRING,
-            allowNull: false,
-            },
-            
-        },{
+                type: DataTypes.INTEGER,
+                primaryKey: true,
+                autoIncrement: true,
+                field: 'user_id'
+              },
+            name: {
+                type: DataTypes.STRING(100),
+                allowNull: false
+              },
+              email: {
+                type: DataTypes.STRING(100),
+                allowNull: false,
+                validate:{
+                    isEmail:{
+                        msg: "must be a valid email"
+                    },
+                },
+              },
+              password: {
+                type: DataTypes.STRING(100),
+                allowNull: false
+              },
+              userType: {
+                type: DataTypes.STRING(50),
+                allowNull: false,
+                validate: {
+                    isIn: [Object.values(UserType)]
+                }
+              },
+              
+            },{
             sequelize,
             tableName: 'Users',
             hooks: {
@@ -82,8 +98,20 @@ class User extends Model<user_attributes, UserCreationAttributes> implements use
     //FIXME: May need to change type Model to any, but unsure
     //TODO: Add association with Task
      static associate(models: Model) {
-    // Example associations:
-    // User.hasMany(models.Post);
-    // User.hasOne(models.Profile);
+        User.belongsTo(User, {
+            as: 'manager',
+            foreignKey: 'manager_id'
+        }); 
+        User.hasMany(User, {
+            as: 'subordinates',
+            foreignKey: 'manager_id'
+        });
+
+        User.hasMany(Task, {
+            foreignKey: 'userId',
+            as: 'tasks'
+        });
   }
 }
+
+export { User, UserAttributes, UserCreationAttributes, UserPublicAttributes };
