@@ -1,11 +1,8 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
-import express, { Router} from 'express';
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
 // import { Task } from '../models';
 import { Model, DataTypes, Sequelize } from 'sequelize';
-import {Task} from './task.ts'
+import {Task} from './task'
 
-const router: Router = express.Router();
 
 enum UserType {
     USER = 'user',
@@ -28,7 +25,7 @@ interface UserCreationAttributes extends Omit<UserAttributes, 'id' | 'createdAt'
 // eslint-disable-next-line @typescript-eslint/no-empty-object-type
 interface UserPublicAttributes extends Omit<UserAttributes, 'password' | 'refreshToken'> {}
 
-class User extends Model<UserAttributes, UserCreationAttributes> implements UserAttributes {
+class User extends Model implements UserAttributes {
     public id!: number;
     public name!: string;
     public userType!: string;
@@ -97,7 +94,8 @@ class User extends Model<UserAttributes, UserCreationAttributes> implements User
     }
     //FIXME: May need to change type Model to any, but unsure
     //TODO: Add association with Task
-     static associate(models: Model) {
+     // eslint-disable-next-line @typescript-eslint/no-explicit-any
+     static associate(models: any) {
         User.belongsTo(User, {
             as: 'manager',
             foreignKey: 'manager_id'

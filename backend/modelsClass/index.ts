@@ -1,30 +1,31 @@
-import fs from 'fs'
-import path from 'path';
 import { Sequelize } from 'sequelize';
-import process from 'process';
 import { Task } from './task';
 import { User } from './user';
 
+console.log("Hello")
 
 const sequelize = new Sequelize({
     dialect: 'postgres',
     host: 'localhost', // or your database host
-    username: 'your_username',
-    password: 'your_password',
-    database: 'your_database',
-    logging: console.log, // set to false to disable logging
+    username: 'postgres',
+    password: 'pass',
+    database: 'techweb',
+    logging: (msg) => console.log(`Sequelize: ${msg}`),
     define: {
         timestamps: true // this will add createdAt and updatedAt fields
     }
 });
-
+const models = {
+    User,
+    Task
+}
 // Initialize models
-User.initModel(sequelize);
-Task.initModel(sequelize);
+const user= User.initModel(sequelize);
+const task = Task.initModel(sequelize);
 
 // Set up associations
-User.associate({ Task });
-Task.associate({ User });
+User.associate(models);
+Task.associate(user);
 
 // Sync database
 async function syncDatabase() {
@@ -32,7 +33,14 @@ async function syncDatabase() {
         // force: true will drop tables if they exist
         // alter: true will alter existing tables to match the model
         // Using neither will only create tables if they don't exist
+        try {
+            await sequelize.authenticate();
+            console.log('Connection has been established successfully.');
+        } catch (error) {
+            console.error('Unable to connect to the database:', error);
+        }
         await sequelize.sync({ 
+            force:true
             // force: true  // uncomment to drop and recreate tables
             // alter: true  // uncomment to alter existing tables
         });

@@ -1,20 +1,19 @@
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
 // import { Task } from '../models';
 import { Model, DataTypes, Sequelize } from 'sequelize';
-import { User } from './user.ts'
 
 
 interface TaskAttributes {
     id: number;
-    idCreator: User;
+    idCreator: number;
     title: string;
 }
 
-interface TaskCreationAttributes extends Omit<TaskAttributes, 'id'> {}
+// eslint-disable-next-line @typescript-eslint/no-empty-object-type
 
-class Task extends Model<TaskAttributes, TaskCreationAttributes> implements TaskAttributes {
+class Task extends Model implements TaskAttributes {
     public id!: number;
-    public idCreator: User;
+    public idCreator!: number;
     public title: string;
 
     static initModel(sequelize: Sequelize): typeof Task{
@@ -41,7 +40,7 @@ class Task extends Model<TaskAttributes, TaskCreationAttributes> implements Task
                 field: 'id_creator',
                 references: {
                     model: 'Users',
-                    key: 'id'
+                    key: 'user_id'
                 }
             }
            },
@@ -52,11 +51,9 @@ class Task extends Model<TaskAttributes, TaskCreationAttributes> implements Task
         );
         return Task;
     }
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     static associate(models: any) {
-        Task.belongsTo(models.User, {
-            foreignKey: 'user_id',
-            as: 'creator_id'
-        });
+        
     }
 }
 
