@@ -1,15 +1,16 @@
 import { Sequelize } from 'sequelize';
 import { Task } from './task';
 import { User } from './user';
+import { Assignment } from './assignments';
 
 console.log("Hello")
 
 const sequelize = new Sequelize({
+    host: 'localhost',
+    port: 5432,
     dialect: 'postgres',
-    host: 'localhost', // or your database host
-    username: 'postgres',
-    password: 'pass',
-    database: 'techweb',
+    password : undefined,
+    database: 'TaskAppDb',
     logging: (msg) => console.log(`Sequelize: ${msg}`),
     define: {
         timestamps: true // this will add createdAt and updatedAt fields
@@ -17,7 +18,8 @@ const sequelize = new Sequelize({
 });
 const models = {
     User,
-    Task
+    Task,
+    Assignment
 }
 // Initialize models
 const user= User.initModel(sequelize);

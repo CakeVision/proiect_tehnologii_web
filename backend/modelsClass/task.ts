@@ -53,27 +53,9 @@ class Task extends Model implements TaskAttributes {
     }
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     static associate(models: any) {
-        
+        // Task.belongsTo(models.User, { foreignKey: 'id_creator' });
+        // Task.belongsToMany(models.User, { through: models.TaskAssignment, foreignKey: 'task_id' });
     }
 }
 
 export {Task, TaskAttributes}
-
-// task_id: {
-//     type: DataTypes.INTEGER,
-//     primaryKey: true,
-//     autoIncrement: true,
-//     field: 'task_id'
-//   },
-//   id_creator: {
-//     type: DataTypes.INTEGER,
-//     allowNull: false
-//   },
-//   title: {
-//     type: DataTypes.STRING(250),
-//     allowNull: false
-//   }
-// }, {
-//   tableName: 'Tasks',
-//   timestamps: false
-// }
