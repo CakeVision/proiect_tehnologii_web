@@ -5,9 +5,9 @@ import {Task} from './task'
 
 
 enum UserType {
-    USER = 'user',
-    MANAGER = 'manager',
-    ADMIN = 'admin',
+    USER = 'executor',
+    MANAGER = 'Manager',
+    ADMIN = 'Administrator',
 }
 
 interface UserAttributes {
@@ -51,9 +51,10 @@ class User extends Model implements UserAttributes {
                 autoIncrement: true,
                 field: 'user_id'
               },
-            name: {
+              name: {
                 type: DataTypes.STRING(100),
-                allowNull: false
+                allowNull: true,
+                field: 'name'
               },
               email: {
                 type: DataTypes.STRING(100),
@@ -70,7 +71,7 @@ class User extends Model implements UserAttributes {
               },
               userType: {
                 type: DataTypes.STRING(50),
-                allowNull: false,
+                allowNull: true,
                 validate: {
                     isIn: [Object.values(UserType)]
                 }
