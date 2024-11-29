@@ -1,11 +1,12 @@
 import express from 'express';
-import User from '../models/user.js';
+import {User} from '../modelsClass/user';
 
 const router = express.Router();
 
 // Get all users
 router.get('/', async (req, res) => {
   try {
+    console.log("hello")
     const users = await User.findAll();
     console.log(users)
     res.json(users);
