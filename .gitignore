@@ -132,6 +132,8 @@ dist
 
 # PostgreSQL SECTION
 #===============================#
+.nix-shell/
+
 # PostgreSQL data directory
 /data/
 
