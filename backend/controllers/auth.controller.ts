@@ -2,8 +2,8 @@
 import { Request, Response } from 'express';
 import bcrypt from 'bcrypt';
 import jwt from 'jsonwebtoken';
-import { User, UserType } from '../models/user.ts';
-import {Token} from '../models/tokens.ts'
+import { User, UserType } from '../models/user.model.ts';
+import {Token} from '../models/token.model.ts'
 
 export class AuthController {
   async register(req: Request, res: Response) {
@@ -86,8 +86,6 @@ export class AuthController {
         {where: {id: user.getDataValue('id')}}
       )
       res.json({
-        user: user.toPublicJSON(),
-        accessToken,
         refreshToken
       });
     } catch (error) {
@@ -98,7 +96,9 @@ export class AuthController {
   // Refresh token
   async refresh(req: Request, res: Response) {
     try {
-      const { refreshToken } = req.body;
+      console.log("Refresh ....................")
+      const authHeader  = req.headers.authorization;
+      const refreshToken = authHeader?.split(' ')[1];
 
       if (!refreshToken) {
         return res.status(401).json({ error: 'Refresh token required' });
@@ -107,6 +107,7 @@ export class AuthController {
       // Verify refresh token
       const payload = jwt.verify(refreshToken, process.env.REFRESH_TOKEN_SECRET!) as { userId: number, userType:string };
       console.log(payload)
+    
       // Find user with this refresh token
       const validToken = await Token.findOne({
         where: {
@@ -149,8 +150,8 @@ export class AuthController {
         { where: { refreshToken } }
       );
 
-      res.json({ message: 'Logged out successfully' });
-    } catch (error) {
+      res.status(200).json({ message: 'Logged out successfully' });
+    } catch {
       res.status(500).json({ error: 'Error during logout' });
     }
   }
@@ -158,9 +159,9 @@ export class AuthController {
   private generateTokens(user: User) {
     const accessToken = jwt.sign(
       { 
-        userId: user.id,
-        email: user.email, 
-        userType: user.userType,
+        userId: user.getDataValue('id'),
+        email:  user.getDataValue('email'), 
+        userType: user.getDataValue('userType'),
       },
       process.env.JWT_SECRET!,
       { expiresIn: '15m' }
@@ -177,46 +178,4 @@ export class AuthController {
 
     return { accessToken, refreshToken };
   }
-  private generateTokensWithLogs(user: User) {
-    try {
-        console.log('Generating tokens for user:', {
-            id: user.id,
-            email: user.email,
-            userType: user.userType
-        });
-        
-        // Check if secrets are available
-        if (!process.env.JWT_SECRET) {
-            console.error('JWT_SECRET is not defined');
-            throw new Error('JWT_SECRET missing');
-        }
-        if (!process.env.REFRESH_TOKEN_SECRET) {
-            console.error('REFRESH_TOKEN_SECRET is not defined');
-            throw new Error('REFRESH_TOKEN_SECRET missing');
-        }
-
-        const accessToken = jwt.sign(
-            {
-                userId: user.id,
-                email: user.email, 
-                userType: user.userType
-            },
-            process.env.JWT_SECRET,
-            { expiresIn: '15m' }
-        );
-        console.log('Access token generated:', accessToken);
-
-        const refreshToken = jwt.sign(
-            { userId: user.id },
-            process.env.REFRESH_TOKEN_SECRET,
-            { expiresIn: '7d' }
-        );
-        console.log('Refresh token generated:', refreshToken);
-
-        return { accessToken, refreshToken };
-    } catch (error) {
-        console.error('Token generation error:', error);
-        throw error;  // Re-throw to handle in the calling function
-    }
-}
 }

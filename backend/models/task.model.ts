@@ -1,8 +1,4 @@
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
-// import { Task } from '../models';
 import { Model, DataTypes, Sequelize } from 'sequelize';
-import {User} from './user'
-import {Assignment} from './assignments'
 
 
 interface TaskAttributes {
@@ -11,8 +7,8 @@ interface TaskAttributes {
     title: string;
 }
 interface TaskCreationAttributes extends Omit<TaskAttributes, 'createdAt' | 'updatedAt'> {
+    id
 }
-// eslint-disable-next-line @typescript-eslint/no-empty-object-type
 
 class Task extends Model<TaskAttributes, TaskCreationAttributes>  {
       static initModel(sequelize: Sequelize): typeof Task{
@@ -53,7 +49,7 @@ class Task extends Model<TaskAttributes, TaskCreationAttributes>  {
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     static associate(models: any) {
         Task.belongsTo(models.User, { foreignKey: 'id_creator' });
-        Task.belongsToMany(models.User, { through: models.Assignment, foreignKey: 'task_id' });
+        Task.belongsToMany(models.User, { through: models.Assignment, foreignKey: 'taskId', otherKey: 'userId' });
     }
 }
 

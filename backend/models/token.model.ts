@@ -36,11 +36,11 @@ class Token extends Model<TokenAttributes,TokenCreationAttributes> {
         )
         return Token;
     }  
-    static associate(models: any){
-        // Token.belongsTo(models.User, {
-        //     foreignKey: 'userId',
-        //     targetKey: 'id'
-        // });
+    static associate(models){
+        Token.belongsTo(models.User, {
+            foreignKey: 'userId',
+            targetKey: 'id'
+        });
     }
 }
 
