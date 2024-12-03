@@ -1,8 +1,11 @@
 import express from 'express';
 import dotenv from 'dotenv';
-import userRoutes from './routes/userRoutes.js';
-import { syncDatabase } from './modelsClass/index.js';
-
+import userRoutes from './routes/userRoutes';
+import sessionRoutes from './routes/authRoutes'
+import { syncDatabase } from './modelsClass/index';
+import testRoutes from './routes/utilRoutes'
+import adminRoutes from './routes/admin.routes'
+import { authorize, UserType } from './middleware/credentials.middleware';
 dotenv.config();
 
 const app = express();
@@ -10,10 +13,9 @@ const PORT = 3000;
 const router = express.Router()
 // Middleware
 app.use(express.json());
-app.use('/test', router.get('/', async (req, res ) => {
-    res.json ({"result": "ok"});
-
-}))
+app.use('/test', testRoutes)
+app.use('/admin', authorize([UserType.ADMIN]), adminRoutes)
+app.use('/session',sessionRoutes)
 app.use('/api/users', userRoutes)
 app.listen(PORT, () => {
     syncDatabase()

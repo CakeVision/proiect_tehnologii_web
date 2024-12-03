@@ -2,10 +2,11 @@
 // import { Task } from '../models';
 import { Model, DataTypes, Sequelize } from 'sequelize';
 import {Task} from './task'
+import { Token } from './tokens';
 
 
 enum UserType {
-    USER = 'executor',
+    USER = 'Executor',
     MANAGER = 'Manager',
     ADMIN = 'Administrator',
 }
@@ -13,31 +14,30 @@ enum UserType {
 interface UserAttributes {
     id : number;
     name: string;
-    user_type: string;
+    userType: string;
     email: string;
     password: string;
+    lastLogin: Date;
+    managerId?: number
 }
 
-interface UserCreationAttributes extends Omit<UserAttributes, 'id' | 'createdAt' | 'updatedAt'> {
+interface UserCreationAttributes extends Omit<UserAttributes,'id' |  'createdAt' | 'updatedAt'> {
     password: string;
 }
 
 // eslint-disable-next-line @typescript-eslint/no-empty-object-type
 interface UserPublicAttributes extends Omit<UserAttributes, 'password' | 'refreshToken'> {}
 
-class User extends Model implements UserAttributes {
-    public id!: number;
-    public name!: string;
-    public user_type!: string;
-    public email!: string;
-    public password!: string;
-
+class User extends Model<UserAttributes, UserCreationAttributes> {
     // /**
     //  * get full_name
     //  */
     // public get full_name():string {
     //     return this.full_name
     // }
+    public static isValidUserType(type: string): type is UserType {
+      return Object.values(UserType).includes(type as UserType);
+    };
     public toPublicJSON(): UserPublicAttributes {
         //put all class fields you DONT want public first, then ...result
         const {password, ...public_user} = this.toJSON();
@@ -45,7 +45,7 @@ class User extends Model implements UserAttributes {
     }
     static initModel(sequelize: Sequelize): typeof User {
         User.init({
-            id: {
+              id: {
                 type: DataTypes.INTEGER,
                 primaryKey: true,
                 autoIncrement: true,
@@ -69,25 +69,27 @@ class User extends Model implements UserAttributes {
                 type: DataTypes.STRING(100),
                 allowNull: false
               },
-              user_type: {
+              userType: {
                 type: DataTypes.STRING(50),
                 allowNull: false,
                 field: "user_type",
                 
               },
-              
+              lastLogin:{
+                type: DataTypes.DATE,
+                allowNull: true,
+              },
+              managerId:{
+                type: DataTypes.INTEGER,
+                allowNull: true,
+              }
+             
             },{
             sequelize,
             tableName: 'Users',
+            timestamps:false,
             hooks: {
-              beforeSave: async (user: User) => {
-                // Add any pre-save hooks here
-                // For example, hashing password if modified
-                // if (user.changed('password')) {
-                //   user.password = await bcrypt.hash(user.password, 10);
-                // }
-              },
-            },
+            }
         }
         )
         return User;
@@ -103,4 +105,4 @@ class User extends Model implements UserAttributes {
   }
 }
 
-export { User, UserAttributes, UserCreationAttributes, UserPublicAttributes };
+export { User, UserAttributes, UserCreationAttributes, UserPublicAttributes, UserType };

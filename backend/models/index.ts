@@ -2,6 +2,7 @@ import { Sequelize } from 'sequelize';
 import { Task } from './task';
 import { User } from './user';
 import { Assignment } from './assignments';
+import { Token } from './tokens';
 
 console.log("Hello")
 
@@ -22,134 +23,143 @@ const models = {
     User: User.initModel(sequelize),
     Task: Task.initModel(sequelize),
     Assignment: Assignment.initModel(sequelize),
+    Token: Token.initModel(sequelize)
 };
 
 // Set up associations
 User.associate(models);
 Task.associate(models);
+Token.associate(models);
 
 async function create_mock_data(){
-
         // Insert Administrator
         await User.create({
-            user_id: 1,
             name: "gigel",
-            user_type: 'Administrator',
+            userType: 'Administrator',
             email: 'admin@company.com',
             password: 'hashed_password_1',
-            manager_id: null
+            lastLogin: new Date(),
+            managerId: undefined
           });
       
           // Insert Managers
           const managers = await User.bulkCreate([
             {
-              user_id: 2,
               name: "gigel",
               email: 'manager1@company.com',
               password: 'hashed_password_2',
-              user_type: 'Manager',
-              manager_id: 1
+              userType: 'Manager',
+              lastLogin: new Date(),
             },
+            
             {
-              user_id: 3,
               name: "gigel",
               email: 'manager2@company.com',
               password: 'hashed_password_3',
-              user_type: 'Manager',
-              manager_id: 1
+              lastLogin: new Date(),
+              userType: 'Manager',
+              managerId: 1
             },
             {
-              user_id: 4,
               name: "gigel",
               email: 'manager3@company.com',
               password: 'hashed_password_4',
-              user_type: 'Manager',
-              manager_id: 1
-            }
+              userType: 'Manager',
+              lastLogin: new Date(),
+              managerId: 1
+            },
+            {
+              name: "username",
+              email: "user@example.com",
+              password: "password",
+              userType: "Executor",
+              lastLogin: new Date(),
+              managerId: 1
+            },
           ]);
       
           // Insert Executors
           const executors = await User.bulkCreate([
             {
-              user_id: 5,
               name: "gigel",
               email: 'executor1@company.com',
               password: 'hashed_password_5',
-              user_type: 'Executor',
-              manager_id: 2
+              userType: 'Executor',
+              lastLogin: new Date(),
+              managerId: 2
             },
             {
-              user_id: 6,
               name: "gigel",
               email: 'executor2@company.com',
               password: 'hashed_password_6',
-              user_type: 'Executor',
-              manager_id: 2
+              userType: 'Executor',
+              lastLogin: new Date(),
+              managerId: 2
             },
             {
-              user_id: 7,
               name: "gigel",
               email: 'executor3@company.com',
               password: 'hashed_password_7',
-              user_type: 'Executor',
-              manager_id: 3
+              userType: 'Executor',
+              lastLogin: new Date(),
+              managerId: 3
             },
             {
-              user_id: 8,
               name: "gigel",
               email: 'executor4@company.com',
               password: 'hashed_password_8',
-              user_type: 'Executor',
-              manager_id: 3
+              userType: 'Executor',
+              lastLogin: new Date(),
+              managerId: 3
             },
             {
-              user_id: 9,
               name: "gigel",
               email: 'executor5@company.com',
               password: 'hashed_password_9',
-              user_type: 'Executor',
-              manager_id: 4
+              userType: 'Executor',
+              lastLogin: new Date(),
+              managerId: 4
             },
             {
-              user_id: 10,
               name: "gigel",
               email: 'executor6@company.com',
               password: 'hashed_password_10',
-              user_type: 'Executor',
-              manager_id: 4
+              userType: 'Executor',
+              lastLogin: new Date(),
+              managerId: 4
             }
           ]);
       
           // Insert Tasks
           const tasks = await Task.bulkCreate([
             {
-              task_id: 1,
-              id_creator: 2,
+              id: 1,
+              idCreator: 2,
               title: 'Implement new feature X'
             },
             {
-              task_id: 2,
-              id_creator: 2,
+              id: 2,
+              idCreator: 2,
               title: 'Fix bug in module Y'
             },
             {
-              task_id: 3,
-              id_creator: 3,
+              id: 3,
+              idCreator: 3,
               title: 'Update documentation'
             },
             {
-              task_id: 4,
-              id_creator: 3,
+              id: 4,
+              idCreator: 3,
               title: 'Performance optimization'
             },
             {
-              task_id: 5,
-              id_creator: 4,
+              id: 5,
+              idCreator: 4,
               title: 'Security audit'
             },
             {
-              task_id: 6,
-              id_creator: 4,
+              id: 6,
+              idCreator: 4,
               title: 'Code review for project Z'
             }
           ]);
@@ -166,7 +176,11 @@ async function create_mock_data(){
             { task_id: 5, user_id: 10 },
             { task_id: 6, user_id: 9 }
           ]);
-      
+          await Token.create({
+            id: 1,
+            refreshToken: "",
+            accessToken: ""
+          });
 }
 
 // Sync database

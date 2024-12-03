@@ -10,15 +10,12 @@ interface TaskAttributes {
     idCreator: number;
     title: string;
 }
-
+interface TaskCreationAttributes extends Omit<TaskAttributes, 'createdAt' | 'updatedAt'> {
+}
 // eslint-disable-next-line @typescript-eslint/no-empty-object-type
 
-class Task extends Model implements TaskAttributes {
-    public id!: number;
-    public idCreator!: number;
-    public title: string;
-
-    static initModel(sequelize: Sequelize): typeof Task{
+class Task extends Model<TaskAttributes, TaskCreationAttributes>  {
+      static initModel(sequelize: Sequelize): typeof Task{
         Task.init(
            {
              id: {
@@ -55,8 +52,8 @@ class Task extends Model implements TaskAttributes {
     }
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     static associate(models: any) {
-        Task.belongsTo(User, { foreignKey: 'id_creator' });
-        Task.belongsToMany(User, { through: Assignment, foreignKey: 'task_id' });
+        Task.belongsTo(models.User, { foreignKey: 'id_creator' });
+        Task.belongsToMany(models.User, { through: models.Assignment, foreignKey: 'task_id' });
     }
 }
 
