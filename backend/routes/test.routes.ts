@@ -1,10 +1,6 @@
 import express from 'express';
-<<<<<<< Updated upstream:backend/routes/utilRoutes.ts
-import {Token} from '../modelsClass/tokens';
-=======
 import {Token} from '../models/token.model';
 import { Assignment } from '../models/assignment.model';
->>>>>>> Stashed changes:backend/routes/test.routes.ts
 
 const router = express.Router();
 

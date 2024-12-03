@@ -157,7 +157,7 @@ export class TaskController {
         const user = await User.findByPk( payload.userId);
         if(!user) res.status(400).json({"status":"error", "message":"invalid token or user"})
 
-        const tasks = user!.getTasks()
+        const tasks = user!.getTasks();
 
         res.status(200).json(tasks)
     }

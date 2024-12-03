@@ -1,15 +1,8 @@
 import { Sequelize } from 'sequelize';
-<<<<<<< Updated upstream:backend/models/index.ts
-import { Task } from './task';
-import { User } from './user';
-import { Assignment } from './assignments';
-import { Token } from './tokens';
-=======
 import { Task } from './task.model';
 import { User,UserType } from './user.model';
 import { Assignment } from './assignment.model';
 import { Token } from './token.model';
->>>>>>> Stashed changes:backend/models/db.ts
 
 console.log("Hello")
 

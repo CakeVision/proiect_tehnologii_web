@@ -1,9 +1,4 @@
 import { Model, DataTypes, Sequelize } from 'sequelize';
-<<<<<<< Updated upstream:backend/models/task.ts
-import {User} from './user'
-import {Assignment} from './assignments'
-=======
->>>>>>> Stashed changes:backend/models/task.model.ts
 
 
 interface TaskAttributes {

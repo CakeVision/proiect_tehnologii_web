@@ -1,14 +1,9 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
 // import { Task } from '../models';
 import { Model, DataTypes, Sequelize } from 'sequelize';
-<<<<<<< Updated upstream:backend/models/user.ts
-import {Task} from './task'
-import { Token } from './tokens';
-=======
 import {Task} from './task.model'
 import { Token } from './token.model';
 import { Assignment } from './assignment.model';
->>>>>>> Stashed changes:backend/models/user.model.ts
 
 
 enum UserType {

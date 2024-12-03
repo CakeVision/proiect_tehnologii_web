@@ -1,5 +1,3 @@
-<<<<<<< Updated upstream
-=======
 import { User } from "../models/user.model";
 import { Token } from "../models/token.model";
 
@@ -48,4 +46,3 @@ export class AdminController {
 
 
 }
->>>>>>> Stashed changes

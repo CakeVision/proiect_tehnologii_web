@@ -1,9 +1,9 @@
 import express from 'express';
 import dotenv from 'dotenv';
-import userRoutes from './routes/userRoutes';
-import sessionRoutes from './routes/authRoutes'
-import { syncDatabase } from './modelsClass/index';
-import testRoutes from './routes/utilRoutes'
+import userRoutes from './routes/user.routes';
+import sessionRoutes from './routes/auth.routes'
+import { syncDatabase } from './models/db';
+import testRoutes from './routes/test.routes'
 import adminRoutes from './routes/admin.routes'
 import { authorize, UserType } from './middleware/credentials.middleware';
 import { createEnvFile } from './gen_env';
