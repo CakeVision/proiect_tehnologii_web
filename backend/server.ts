@@ -6,6 +6,10 @@ import { syncDatabase } from './modelsClass/index';
 import testRoutes from './routes/utilRoutes'
 import adminRoutes from './routes/admin.routes'
 import { authorize, UserType } from './middleware/credentials.middleware';
+import { createEnvFile } from './gen_env';
+import taskRoutes from './routes/task.routes'
+createEnvFile('./.env')
+
 dotenv.config();
 
 const app = express();
@@ -16,7 +20,8 @@ app.use(express.json());
 app.use('/test', testRoutes)
 app.use('/admin', authorize([UserType.ADMIN]), adminRoutes)
 app.use('/session',sessionRoutes)
-app.use('/api/users', userRoutes)
+app.use('/users', userRoutes)
+app.use('/tasks', taskRoutes)
 app.listen(PORT, () => {
     syncDatabase()
     .then(() => {

@@ -1,8 +1,14 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
 // import { Task } from '../models';
 import { Model, DataTypes, Sequelize } from 'sequelize';
+<<<<<<< Updated upstream:backend/models/user.ts
 import {Task} from './task'
 import { Token } from './tokens';
+=======
+import {Task} from './task.model'
+import { Token } from './token.model';
+import { Assignment } from './assignment.model';
+>>>>>>> Stashed changes:backend/models/user.model.ts
 
 
 enum UserType {
@@ -35,6 +41,22 @@ class User extends Model<UserAttributes, UserCreationAttributes> {
     // public get full_name():string {
     //     return this.full_name
     // }
+      public async getTasks() {
+        const tasks = await Task.findAll({
+            include: [{
+                model: Assignment,
+                where: {
+                    userId: this.getDataValue('id')
+                }
+            }, {
+                model: User,
+                foreignKey: 'idCreator',
+                attributes: ['name', 'email']
+            }]
+        });
+        
+        return tasks;
+    }
     public static isValidUserType(type: string): type is UserType {
       return Object.values(UserType).includes(type as UserType);
     };
@@ -98,10 +120,8 @@ class User extends Model<UserAttributes, UserCreationAttributes> {
     //TODO: Add association with Task
      // eslint-disable-next-line @typescript-eslint/no-explicit-any
      static associate(models: any) {
-        User.hasMany(Task, {
-            foreignKey: 'userId',
-            as: 'tasks'
-        });
+        User.belongsToMany(models.Task, 
+        { through: models.Assignment, foreignKey: 'taskId', otherKey:'userId' });
   }
 }
 

@@ -86,8 +86,6 @@ export class AuthController {
         {where: {id: user.getDataValue('id')}}
       )
       res.json({
-        user: user.toPublicJSON(),
-        accessToken,
         refreshToken
       });
     } catch (error) {
@@ -98,7 +96,9 @@ export class AuthController {
   // Refresh token
   async refresh(req: Request, res: Response) {
     try {
-      const { refreshToken } = req.body;
+
+      const authHeader  = req.headers.authorization;
+      const refreshToken = authHeader?.split(' ')[1];
 
       if (!refreshToken) {
         return res.status(401).json({ error: 'Refresh token required' });
@@ -149,8 +149,13 @@ export class AuthController {
         { where: { refreshToken } }
       );
 
+<<<<<<< Updated upstream
       res.json({ message: 'Logged out successfully' });
     } catch (error) {
+=======
+      res.status(200).json({ message: 'Logged out successfully' });
+    } catch {
+>>>>>>> Stashed changes
       res.status(500).json({ error: 'Error during logout' });
     }
   }

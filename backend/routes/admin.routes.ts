@@ -1,11 +1,17 @@
 import express from 'express'
+<<<<<<< Updated upstream
 import { Request, Response, NextFunction } from 'express';
 import {authorize, UserType, AuthenticatedRequest} from '../middleware/credentials.middleware';
 import { User } from '../models/user';
 import { Token } from '../models/tokens';
+=======
+import { AdminController } from '../controllers/admin.controller';
+
+>>>>>>> Stashed changes
 
 const router = express.Router();
 
+<<<<<<< Updated upstream
 router.get('/test',  (req, res) => {
   res.json({ message: 'Admin access granted' });})
 
@@ -49,6 +55,11 @@ router.post('/delete',(req,res)=>{
     );
     }
 })
+=======
+router.get('/test',  (req, res) => { res.json({ message: 'Admin access granted' }); });
+router.put('/change_role',adminController.changeRole.bind(adminController));
+router.delete('/delete',adminController.delete.bind(adminController));
+>>>>>>> Stashed changes
 
 
 export default router

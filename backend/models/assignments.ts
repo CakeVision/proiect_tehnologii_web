@@ -1,31 +1,38 @@
 import { Model, DataTypes, Sequelize } from 'sequelize';
 
-
 interface AssignmentAttributes {
+    id:number
     taskId: number
     userId: number
 }
-
-class Assignment extends Model implements AssignmentAttributes {
-    public taskId!: number
-    public userId!: number
+interface AssignmentCreationAttributes extends Omit<AssignmentAttributes, 'createdAt' | 'updatedAt'> {
+    id
+}
+class Assignment extends Model<AssignmentAttributes,AssignmentCreationAttributes>  {
 
     static initModel(sequelize: Sequelize): typeof Assignment{
         Assignment.init({
-            task_id: {
+            id:{
                 type: DataTypes.INTEGER,
-                primaryKey: true,
+                primaryKey:true,
+                autoIncrement:true,
+                field: 'id'
+            },
+            taskId: {
+                type: DataTypes.INTEGER,
+                unique:false,
                 field: "task_id"
               },
-              user_id: {
+              userId: {
                 type: DataTypes.INTEGER,
-                primaryKey: true,
+                unique:false,
                 field: "user_id"
               }
             },
             {
                 sequelize,
                 tableName: "TaskAssignments",
+                
             }
         );
         return Assignment;

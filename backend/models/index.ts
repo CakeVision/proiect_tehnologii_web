@@ -1,8 +1,15 @@
 import { Sequelize } from 'sequelize';
+<<<<<<< Updated upstream:backend/models/index.ts
 import { Task } from './task';
 import { User } from './user';
 import { Assignment } from './assignments';
 import { Token } from './tokens';
+=======
+import { Task } from './task.model';
+import { User,UserType } from './user.model';
+import { Assignment } from './assignment.model';
+import { Token } from './token.model';
+>>>>>>> Stashed changes:backend/models/db.ts
 
 console.log("Hello")
 
@@ -33,7 +40,7 @@ Token.associate(models);
 
 async function create_mock_data(){
         // Insert Administrator
-        await User.create({
+        const admin = await User.create({
             name: "gigel",
             userType: 'Administrator',
             email: 'admin@company.com',
@@ -79,7 +86,7 @@ async function create_mock_data(){
           ]);
       
           // Insert Executors
-          const executors = await User.bulkCreate([
+           await User.bulkCreate([
             {
               name: "gigel",
               email: 'executor1@company.com',
@@ -131,51 +138,34 @@ async function create_mock_data(){
           ]);
       
           // Insert Tasks
-          const tasks = await Task.bulkCreate([
+          await Task.bulkCreate([
             {
-              id: 1,
               idCreator: 2,
               title: 'Implement new feature X'
             },
             {
-              id: 2,
               idCreator: 2,
               title: 'Fix bug in module Y'
             },
             {
-              id: 3,
               idCreator: 3,
               title: 'Update documentation'
             },
             {
-              id: 4,
               idCreator: 3,
               title: 'Performance optimization'
             },
             {
-              id: 5,
               idCreator: 4,
               title: 'Security audit'
             },
             {
-              id: 6,
               idCreator: 4,
               title: 'Code review for project Z'
             }
           ]);
       
-          // Insert Task Assignments
-          await Assignment.bulkCreate([
-            { task_id: 1, user_id: 5 },
-            { task_id: 1, user_id: 6 },
-            { task_id: 2, user_id: 5 },
-            { task_id: 3, user_id: 7 },
-            { task_id: 3, user_id: 8 },
-            { task_id: 4, user_id: 7 },
-            { task_id: 5, user_id: 9 },
-            { task_id: 5, user_id: 10 },
-            { task_id: 6, user_id: 9 }
-          ]);
+          
           await Token.create({
             id: 1,
             refreshToken: "",
@@ -199,6 +189,59 @@ async function create_mock_data(){
             force:true
             // force: true  // uncomment to drop and recreate tables
             // alter: true  // uncomment to alter existing tables
+        });
+        const user1 = await User.create({
+            name: 'John Doe',
+            email: 'john@example.com',
+            password: 'password123',
+            userType: UserType.USER,
+            lastLogin: new Date()
+        });
+
+        const user2 = await User.create({
+            name: 'Jane Smith',
+            email: 'jane@example.com',
+            password: 'password456',
+            userType: UserType.MANAGER,
+            lastLogin: new Date()
+        });
+
+        const user3 = await User.create({
+            name: 'Bob Wilson',
+            email: 'bob@example.com',
+            password: 'password789',
+            userType: UserType.ADMIN,
+            lastLogin: new Date()
+        });
+
+        // Create tasks
+        const task1 = await Task.create({
+            title: 'Complete Project A',
+            idCreator: user1.getDataValue('id')
+        });
+
+        const task2 = await Task.create({
+            title: 'Review Documentation',
+            idCreator: user2.getDataValue('id')
+        });
+
+        const task3 = await Task.create({
+            title: 'Deploy Application',
+            idCreator: user3.getDataValue('id')
+        });
+          const assignment1 = await Assignment.create({
+            userId: user1.getDataValue('id'),
+            taskId: task2.getDataValue('id')  // John is assigned to Jane's task
+        });
+
+        const assignment2 = await Assignment.create({
+            userId: user2.getDataValue('id'),
+            taskId: task3.getDataValue('id')  // Jane is assigned to Bob's task
+        });
+
+        const assignment3 = await Assignment.create({
+            userId: user3.getDataValue('id'),
+            taskId: task1.getDataValue('id')  // Bob is assigned to John's task
         });
 
         await create_mock_data();
