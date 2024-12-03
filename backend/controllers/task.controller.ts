@@ -9,15 +9,14 @@ const buildParamDict = (fields: Record<string, any>) =>
    {});
 
 export class TaskController {
-    
     async create(req,res){
         const { 
            title = undefined,
            idCreator = undefined,
         } = req.body;
-       
+        
         const params = buildParamDict({title, idCreator})
-        const empty = Object.keys(params).length === 0
+        const empty = Object.values(params).length < 2
         if(empty){
             res.status(400).json({
                 "status":"Missing Params",
@@ -25,14 +24,16 @@ export class TaskController {
             });
             return;
         }
-       await Task.create(title,idCreator);
+       const task = await Task.create({idCreator, title});
        res.status(200).json({
                 "message":`Creation Succesful`,
+                "task":task
         });
 
     }
     async alter(req,res){
-        const { 
+        const {
+           taskId = undefined,
            title = undefined,
            idCreator = undefined,
         } = req.body;
@@ -47,18 +48,16 @@ export class TaskController {
             return;
         }
 
-        const task = Task.findOne({
-            where: params
-        });
+        const task = Task.findByPk(taskId)
         if(!task){
-            res.status(402).json({
+            res.status(400).json({
                 "status":"Task not found",
-                "message":`Params provided gave no results`,
+                "message":`No task with provided id`,
             });
         }
         await Task.update(
             {title, idCreator},
-            {where:params}
+            {where:{id:taskId}}
         )
         res.status(200).json({
                 "message":`Alter Succesful`,
@@ -68,8 +67,9 @@ export class TaskController {
         const {
             id = undefined
         } = req.body
+
         if(!id) res.status(400).json({"status":"error", "message":"id is required to delete a task"})
-        await Task.destroy({where: id})
+        await Task.destroy({where:{id:id}})
         res.status(200).json({"status":"completed", "message":"task succesfully deleted"})
     }
     async assign(req,res){
@@ -113,11 +113,11 @@ export class TaskController {
             res.status(400).json({"status":"error", "message":"userId is required to delete a task"})
             return;
         }
-        const assignment = await Assignment.findByPk(userId, taskId)
+        const assignment = await Assignment.findOne({where:{userId, taskId}})
         if(!assignment) {
             res.status(400).json({"status":"error", "message":`Assignment with key (${userId},${taskId}) doesnt exist`})
         }
-        assignment.destroy()
+        assignment!.destroy()
         res.status(200).json({"status":"success", "message":"Assignment deleted succesfully"})
     }
     async getAll(req, res){
@@ -133,6 +133,7 @@ export class TaskController {
         const {
             taskId = undefined
         } = req.body
+
         const authHeader  = req.headers.authorization;
         const refreshToken = authHeader?.split(' ')[1];
         const payload = jwt.verify(refreshToken, process.env.REFRESH_TOKEN_SECRET!) as { userId: number, userType:string };
@@ -140,12 +141,24 @@ export class TaskController {
             res.status(400).json({"status":"error", "message":"taskId is required to delete a task"})
             return;
         }
-        const assignment = Assignment.findByPk(payload.userId, taskId)
+        const assignment = await Assignment.findOne({
+            where:{
+                taskId:taskId,
+                userId:payload.userId
+            },
+            include:[
+                {model:User},
+                {
+                    model:Task,
+                    attributes: ['title','idCreator']
+                },
+            ]
+        })
         if(!assignment){
             res.status(400).json({"status":"error", "message":"user does not own a task with that id"})
             return;
         }
-        const task = Task.findByPk(taskId);
+        const task = await Task.findByPk(taskId)
         res.status(200).json({"status":"success", "message":"Task Found", "task":task})
     }
     async getAllOwned(req,res){

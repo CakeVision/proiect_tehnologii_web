@@ -37,6 +37,10 @@ class Assignment extends Model<AssignmentAttributes,AssignmentCreationAttributes
         );
         return Assignment;
     }
+    static associate(models){
+        Assignment.belongsTo(models.User);
+        Assignment.belongsTo(models.Task);
+    }
 }
 
 export {Assignment}

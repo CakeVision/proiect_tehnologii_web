@@ -36,17 +36,18 @@ class User extends Model<UserAttributes, UserCreationAttributes> {
     // public get full_name():string {
     //     return this.full_name
     // }
-      public async getTasks() {
+      public async getTasks(taskWhereOptions = {}) {
+
         const tasks = await Task.findAll({
+            where:taskWhereOptions,
             include: [{
+              model: User,
+              through: {
                 model: Assignment,
-                where: {
-                    userId: this.getDataValue('id')
-                }
-            }, {
-                model: User,
-                foreignKey: 'idCreator',
-                attributes: ['name', 'email']
+              },
+              where: {
+                id: this.getDataValue('id')
+              }
             }]
         });
         

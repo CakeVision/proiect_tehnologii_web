@@ -29,6 +29,7 @@ const models = {
 // Set up associations
 User.associate(models);
 Task.associate(models);
+Assignment.associate(models)
 Token.associate(models);
 
 async function create_mock_data(){

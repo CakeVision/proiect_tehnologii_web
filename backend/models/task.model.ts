@@ -9,7 +9,6 @@ interface TaskAttributes {
 interface TaskCreationAttributes extends Omit<TaskAttributes, 'createdAt' | 'updatedAt'> {
     id
 }
-// eslint-disable-next-line @typescript-eslint/no-empty-object-type
 
 class Task extends Model<TaskAttributes, TaskCreationAttributes>  {
       static initModel(sequelize: Sequelize): typeof Task{
