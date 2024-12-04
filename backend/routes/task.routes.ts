@@ -6,7 +6,7 @@ const router = express.Router();
 const taskController = new TaskController();
 
 router.get('/:id',authorize([UserType.ADMIN]), taskController.getOne.bind(taskController))
-router.get('/oneOwned', authorize([UserType.MANAGER, UserType.ADMIN]), taskController.getOneOwned)
+router.get('/owned/:id', authorize([UserType.MANAGER, UserType.ADMIN]), taskController.getOneOwned)
 router.get('/all',authorize([UserType.ADMIN]), taskController.getAll.bind(taskController))
 router.get('/allOwned',authorize(), taskController.getAllOwned.bind(taskController))
 
