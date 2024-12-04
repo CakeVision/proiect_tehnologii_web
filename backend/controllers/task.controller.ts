@@ -130,9 +130,7 @@ export class TaskController {
     }
     
     async getOneOwned(req,res){
-        const {
-            taskId = undefined
-        } = req.body
+       const taskId  = req.params.id
 
         const authHeader  = req.headers.authorization;
         const refreshToken = authHeader?.split(' ')[1];
