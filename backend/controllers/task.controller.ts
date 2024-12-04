@@ -125,7 +125,7 @@ export class TaskController {
         res.status(200).json(tasks)
     }
     async getOne(req,res){
-        const tasks = await Task.findByPk(req.body.id)
+        const tasks = await Task.findByPk(req.params.id)
         res.status(200).json(tasks)
     }
     
