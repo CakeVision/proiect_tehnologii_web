@@ -1,0 +1,669 @@
+openapi: '3.0.0'
+info:
+  title: Task Management API
+  version: '1.0.0'
+  description: API for managing tasks, users, and administrative functions
+
+servers:
+  - url: http://localhost:3000
+    description: Development server
+
+components:
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+      description: 'JWT Authorization header using Bearer scheme. Example: "Authorization: Bearer eyJhbGciOiJIUzI1NiIs..."'
+
+  responses:
+    InvalidParamsError:
+      description: >
+        body parameters are not valid 
+        see error message for details
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              status:
+                type: string
+                example: "Missing Params"
+              message:
+                type: string
+                example: "Missing Parameter id"
+
+    UnauthorizedError:
+        description: Access token is missing or invalid
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                status:
+                  type: string
+                  example: "error"
+                message:
+                  type: string
+                  example: "Unauthorized access"
+
+    ForbiddenError:
+      description: User doesn't have enough privileges
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              status:
+                type: string
+                example: "error"
+              message:
+                type: string
+                example: "Insufficient permissions"
+    InternalError:
+      description: Programmer goofed up
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              status:
+                type: string
+                example: "error"
+              message:
+                type: string
+                example: "DB action failed"
+
+   
+  parameters:
+    ContentTypeHeader:
+      in: header
+      name: Content-Type
+      required: true
+      schema:
+        type: string
+        default: application/json
+    
+    AcceptHeader:
+      in: header
+      name: Accept
+      schema:
+        type: string
+        default: '*/*'
+    
+    AcceptEncodingHeader:
+      in: header
+      name: Accept-Encoding
+      schema:
+        type: string
+        default: 'gzip, deflate, br'
+    
+    ConnectionHeader:
+      in: header
+      name: Connection
+      schema:
+        type: string
+        default: keep-alive
+  schemas:
+    User:
+      type: object
+      properties:
+        id:
+          type: integer
+          readOnly: true
+          description: Auto-incremented primary key
+        name:
+          type: string
+          maxLength: 100
+        userType:
+          type: string
+          enum: ['Executor', 'Manager', 'Administrator']
+        email:
+          type: string
+          format: email
+          maxLength: 100
+        password:
+          type: string
+          maxLength: 100
+          writeOnly: true
+        lastLogin:
+          type: string
+          format: date-time
+          nullable: true
+        managerId:
+          type: integer
+          nullable: true
+        tasks:
+          type: array
+          items:
+            $ref: '#/components/schemas/Task'
+      required:
+        - name
+        - userType
+        - email
+        - password
+
+    Task:
+      type: object
+      properties:
+        id:
+          type: integer
+          readOnly: true
+          description: Auto-incremented primary key
+        idCreator:
+          type: integer
+        title:
+          type: string
+          maxLength: 200
+        assignedUsers:
+          type: array
+          items:
+            $ref: '#/components/schemas/User'
+        creator:
+          $ref: '#/components/schemas/User'
+      required:
+        - title
+        - idCreator
+
+    Assignment:
+      type: object
+      properties:
+        taskId:
+          type: integer
+        userId:
+          type: integer
+      required:
+        - taskId
+        - userId
+
+    Token:
+      type: object
+      properties:
+        id:
+          type: integer
+        refreshToken:
+          type: string
+          maxLength: 300
+          nullable: true
+        accessToken:
+          type: string
+          maxLength: 300
+          nullable: true
+        userId:
+          type: integer
+      required:
+        - id
+
+    UserPublic:
+      type: object
+      properties:
+        id:
+          type: integer
+          readOnly: true
+        name:
+          type: string
+          maxLength: 100
+        userType:
+          type: string
+          enum: ['Executor', 'Manager', 'Administrator']
+        email:
+          type: string
+          format: email
+        lastLogin:
+          type: string
+          format: date-time
+          nullable: true
+        managerId:
+          type: integer
+          nullable: true
+      required:
+        - name
+        - userType
+        - email
+
+                  
+paths:
+  
+  /test:
+    get:
+      summary: Basic test endpoint
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  result:
+                    type: string
+                    example: "ok" 
+        '401':
+          $ref: '#/components/responses/UnauthorizedError'
+        '403':
+          $ref: '#/components/responses/ForbiddenError'
+
+  /test/all/tokens:
+    get:
+      summary: Get all tokens
+      responses:
+        '200':
+          description: List of all tokens
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    id:
+                      type: integer
+                    refreshToken:
+                      type: string
+                      description: >
+                       Auto generated field in table for a registered/logged in user
+                       Field data will be regenerated on every page refresh
+                       Valid for 15m
+                    accessToken:
+                      type: string
+                      description: > 
+                        Auto generated field in table for a registered/logged in user
+                        Valid for 7d
+        '401':
+          $ref: '#/components/responses/UnauthorizedError'
+        '403':
+          $ref: '#/components/responses/ForbiddenError'
+
+
+  /admin/test:
+    get:
+      summary: Test admin access
+      security:
+        - BearerAuth: []
+      responses:
+        '200':
+          description: Admin access confirmation
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: "Admin access granted" 
+        '401':
+          $ref: '#/components/responses/UnauthorizedError'
+        '403':
+          $ref: '#/components/responses/ForbiddenError'
+
+
+  /admin/change_role:
+    put:
+      summary: Change user role
+      security:
+        - BearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                id:
+                  type: number
+                  example: 1
+                  description: The id of the user you want to change 
+                userType:
+                  type: string
+                  enum: ['Executor', 'Manager', 'Administrator']
+      responses:
+        '200':
+          description: Role changed successfully 
+        '400':
+          description: Invalid request body parameters
+        '401':
+          $ref: '#/components/responses/UnauthorizedError'
+        '403':
+          $ref: '#/components/responses/ForbiddenError'
+
+  /admin/delete:
+    delete:
+      summary: Delete user
+      security:
+        - BearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                id:
+                  type: number
+                  example: 1
+                  description: id of user to delete
+      responses:
+        '200':
+          description: User deleted successfully 
+        '401':
+          $ref: '#/components/responses/UnauthorizedError'
+        '403':
+          $ref: '#/components/responses/ForbiddenError'
+        '500':
+          $ref: '#/components/responses/InternalError'
+
+  /session/register:
+    post:
+      summary: Register new user
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                email:
+                  type: string
+                password:
+                  type: string
+                name:
+                  type: string
+                userType:
+                  type: string
+                  enum: ['Executor', 'Manager', 'Administrator']
+                managerId:
+                  type: number
+                  description: > 
+                    id of manager that creates the user.
+                    The first manager is created by the admin account
+                    Account uses the login example values
+      responses:
+        '201':
+          description: User registered successfully 
+        '400':
+          description: Invalid Parameters
+        '401':
+          $ref: '#/components/responses/UnauthorizedError'
+        '403':
+          $ref: '#/components/responses/ForbiddenError'
+        
+
+  /session/login:
+    post:
+      summary: User login
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                email:
+                  type: string
+                  example: admin@email.com
+                password:
+                  type: string
+                  example: pass
+      responses:
+        '200':
+          description: Login successful
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  refreshToken:
+                    type: string
+        '401':
+          $ref: '#/components/responses/UnauthorizedError'
+        '403':
+          $ref: '#/components/responses/ForbiddenError'
+
+  /session/refresh:
+    post:
+      summary: Refresh authentication token
+      security:
+        - BearerAuth: []
+      responses:
+        '200':
+          description: Token refreshed successfully 
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  refreshToken:
+                    type: string
+        '401':
+          $ref: '#/components/responses/UnauthorizedError'
+        '403':
+          $ref: '#/components/responses/ForbiddenError'
+
+  /session/logout:
+    post:
+      summary: User logout
+      security:
+        - BearerAuth: []
+      responses:
+        '200':
+          description: Logout successful 
+        '401':
+          $ref: '#/components/responses/UnauthorizedError'
+        '403':
+          $ref: '#/components/responses/ForbiddenError'
+        '500':
+          $ref: '#/components/responses/InternalError'
+
+  /tasks/create:
+    post:
+      summary: Create new task
+      security:
+        - BearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                title:
+                  type: string
+                  example: My Title
+                idCreator:
+                  type: number
+                  example: 1
+      responses:
+        '200':
+          description: Task created successfully 
+        '400':
+          $ref: '#/components/responses/InvalidParamsError'
+        '401':
+          $ref: '#/components/responses/UnauthorizedError'
+        '403':
+          $ref: '#/components/responses/ForbiddenError'
+
+  /tasks/alter:
+    post:
+      summary: Modify existing task
+      security:
+        - BearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                taskId:
+                  type: number
+                title:
+                  type: string
+                  example: My Title
+                idCreator:
+                  type: number
+                  example: 1
+      responses:
+        '200':
+          description: Task modified successfully 
+        '400':
+          $ref: '#/components/responses/InvalidParamsError'
+        '401':
+          $ref: '#/components/responses/UnauthorizedError'
+        '403':
+          $ref: '#/components/responses/ForbiddenError'
+
+  /tasks/delete:
+    post:
+      summary: Delete task
+      security:
+        - BearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                id:
+                  type: number
+      responses:
+        '200':
+          description: Task deleted successfully 
+        '400':
+          $ref: '#/components/responses/InvalidParamsError'
+        '401':
+          $ref: '#/components/responses/UnauthorizedError'
+        '403':
+          $ref: '#/components/responses/ForbiddenError'
+
+  /tasks/assign:
+    post:
+      summary: Assign task to user
+      security:
+        - BearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                taskId:
+                  type: number
+                  description: id of task to assign
+                userId:
+                  type: number
+                  description: id of user to recieve the task
+                  example: 1
+
+      responses:
+        '200':
+          description: Task assigned successfully  
+        '400':
+          $ref: '#/components/responses/InvalidParamsError'
+        '401':
+          $ref: '#/components/responses/UnauthorizedError'
+        '403':
+          $ref: '#/components/responses/ForbiddenError'
+
+  /tasks/deassign:
+    post:
+      summary: Remove task assignment
+      security:
+        - BearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                taskId:
+                  type: number
+                  description: id of task to deassign if exists assignment exists
+                userId:
+                  type: number
+                  description: id of user to not have the task
+                  example: 1
+
+      responses:
+        '200':
+          description: Task deassigned successfully 
+        '400':
+          $ref: '#/components/responses/InvalidParamsError' 
+        '401':
+          $ref: '#/components/responses/UnauthorizedError'
+        '403':
+          $ref: '#/components/responses/ForbiddenError'
+
+  /tasks/one:
+    get:
+      summary: Get specific task details
+      security:
+        - BearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                id: 
+                  type: number
+      responses:
+        '200':
+          description: Task details retrieved successfully 
+        '400':
+          $ref: '#/components/responses/InvalidParamsError' 
+        '401':
+          $ref: '#/components/responses/UnauthorizedError'
+        '403':
+          $ref: '#/components/responses/ForbiddenError'
+
+  /tasks/oneOwned:
+    get:
+      summary: Get specific owned task details
+      security:
+        - BearerAuth: []
+      parameters:
+        - in: query
+          name: taskId
+          schema:
+            type: string
+          required: true
+          description: ID of the owned task to retrieve
+      responses:
+        '200':
+          description: Owned task details retrieved successfully 
+        '400':
+          $ref: '#/components/responses/InvalidParamsError' 
+        '401':
+          $ref: '#/components/responses/UnauthorizedError'
+        '403':
+          $ref: '#/components/responses/ForbiddenError'
+
+  /tasks/all:
+    get:
+      summary: Get all tasks
+      security:
+        - BearerAuth: []
+      responses:
+        '200':
+          description: All tasks retrieved successfully  
+        '401':
+          $ref: '#/components/responses/UnauthorizedError'
+        '403':
+          $ref: '#/components/responses/ForbiddenError'
+
+  /tasks/allOwned:
+    get:
+      summary: Get all owned tasks
+      security:
+        - BearerAuth: []
+      responses:
+        '200':
+          description: All owned tasks retrieved successfully 
+        '401':
+          $ref: '#/components/responses/UnauthorizedError'
+        '403':
+          $ref: '#/components/responses/ForbiddenError'
