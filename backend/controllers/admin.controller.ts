@@ -39,7 +39,7 @@ export class AdminController {
         catch{
         res.status(500).json(
             {
-                "status":"error"
+                "status":"error",
                 "message":"delete failed"
             }
         );
