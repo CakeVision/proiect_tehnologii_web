@@ -6,11 +6,11 @@ interface TokenAttributes {
     accessToken: string;
 }
 interface TokenCreationAttributes extends Omit<TokenAttributes, 'createdAt' | 'updatedAt'> {
-    id:number;
+    id: number;
 }
 
 
-class Token extends Model<TokenAttributes,TokenCreationAttributes> {
+class Token extends Model<TokenAttributes, TokenCreationAttributes> {
     static initModel(sequelize: Sequelize): typeof Token {
         Token.init({
             id: {
@@ -18,25 +18,26 @@ class Token extends Model<TokenAttributes,TokenCreationAttributes> {
                 primaryKey: true,
                 autoIncrement: false,
                 field: 'token_id',
-              },
+            },
             refreshToken: {
                 type: DataTypes.STRING(300),
                 allowNull: true,
             },
-              accessToken: {
+            accessToken: {
                 type: DataTypes.STRING(300),
                 allowNull: true,
             }
-          
-            },{
+
+        }, {
             sequelize,
             tableName: 'Tokens',
+            schema: 'public',
             timestamps: false,
         }
         )
         return Token;
-    }  
-    static associate(models){
+    }
+    static associate(models) {
         Token.belongsTo(models.User, {
             foreignKey: 'userId',
             targetKey: 'id'
@@ -44,4 +45,4 @@ class Token extends Model<TokenAttributes,TokenCreationAttributes> {
     }
 }
 
-export {Token, TokenAttributes as TokensAttributes}
+export { Token, TokenAttributes as TokensAttributes }

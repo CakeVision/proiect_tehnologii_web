@@ -4,9 +4,9 @@ import dotenv from 'dotenv';
 dotenv.config();
 
 const sequelize = new Sequelize(
-  'TaskAppDb',      // Database name
-  'tav',            // Username
-  undefined,        // Password (set to `undefined` if not required)
+  'taskappdb',      // Database name
+  'robert4',            // Username
+  '09082002',        // Password (set to `undefined` if not required)
   {
     host: 'localhost',
     port: 5432,

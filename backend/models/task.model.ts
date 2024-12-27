@@ -10,39 +10,40 @@ interface TaskCreationAttributes extends Omit<TaskAttributes, 'createdAt' | 'upd
     id
 }
 
-class Task extends Model<TaskAttributes, TaskCreationAttributes>  {
-      static initModel(sequelize: Sequelize): typeof Task{
+class Task extends Model<TaskAttributes, TaskCreationAttributes> {
+    static initModel(sequelize: Sequelize): typeof Task {
         Task.init(
-           {
-             id: {
-                type: DataTypes.INTEGER,
-                primaryKey: true,
-                autoIncrement: true,
-                field: "task_id",
-            },
-            title: {
-                type: DataTypes.STRING(200),
-                allowNull: false,
-                validate: {
-                    notEmpty: {
-                        msg: 'Title is required'
+            {
+                id: {
+                    type: DataTypes.INTEGER,
+                    primaryKey: true,
+                    autoIncrement: true,
+                    field: "task_id",
+                },
+                title: {
+                    type: DataTypes.STRING(200),
+                    allowNull: false,
+                    validate: {
+                        notEmpty: {
+                            msg: 'Title is required'
+                        }
+                    }
+                },
+                idCreator: {
+                    type: DataTypes.INTEGER,
+                    allowNull: false,
+                    field: 'id_creator',
+                    references: {
+                        model: 'Users',
+                        key: 'user_id'
                     }
                 }
             },
-            idCreator: {
-                type: DataTypes.INTEGER,
-                allowNull: false,
-                field: 'id_creator',
-                references: {
-                    model: 'Users',
-                    key: 'user_id'
-                }
+            {
+                sequelize,
+                tableName: "Tasks",
+                schema: 'public',
             }
-           },
-           {
-            sequelize,
-            tableName: "Tasks",
-           }
         );
         return Task;
     }
@@ -53,4 +54,4 @@ class Task extends Model<TaskAttributes, TaskCreationAttributes>  {
     }
 }
 
-export {Task, TaskAttributes}
+export { Task, TaskAttributes }
