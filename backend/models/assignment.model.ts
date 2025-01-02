@@ -1,46 +1,51 @@
 import { Model, DataTypes, Sequelize } from 'sequelize';
+import { User } from './user.model';
+import { Task } from './task.model';
 
 interface AssignmentAttributes {
-    id: number
     taskId: number
     userId: number
 }
-interface AssignmentCreationAttributes extends Omit<AssignmentAttributes, 'createdAt' | 'updatedAt'> {
-    id
-}
-class Assignment extends Model<AssignmentAttributes, AssignmentCreationAttributes> {
+//interface AssignmentCreationAttributes extends Omit<AssignmentAttributes, 'createdAt' | 'updatedAt'> {
+//    id
+//}
+class Assignment extends Model<AssignmentAttributes> {
 
     static initModel(sequelize: Sequelize): typeof Assignment {
         Assignment.init({
-            id: {
+            userId: {
                 type: DataTypes.INTEGER,
                 primaryKey: true,
-                autoIncrement: true,
-                field: 'id'
+                field: 'user_id',
+
             },
             taskId: {
                 type: DataTypes.INTEGER,
-                unique: false,
-                field: "task_id"
-            },
-            userId: {
-                type: DataTypes.INTEGER,
-                unique: false,
-                field: "user_id"
+                primaryKey: true,
+                field: 'task_id',
+
             }
         },
             {
                 sequelize,
                 tableName: "TaskAssignments",
                 schema: 'public',
+
             }
         );
         return Assignment;
     }
     static associate(models) {
-        Assignment.belongsTo(models.User);
-        Assignment.belongsTo(models.Task);
+        //
+        //        Assignment.belongsTo(models.User, {
+        //            foreignKey: 'userId',
+        //            targetKey: 'userId'
+        //        });
+        //        Assignment.belongsTo(models.Task, {
+        //            foreignKey: 'taskId',
+        //            targetKey: 'taskId'
+        //        });
     }
 }
 
-export { Assignment }
+export { Assignment, AssignmentAttributes }

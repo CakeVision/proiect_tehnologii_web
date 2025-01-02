@@ -79,25 +79,21 @@ export class TaskController {
         } = req.body
         //TODO: Refactor into error function
         if (!taskId) {
-            res.status(400).json({ "status": "error", "message": "taskId is required to delete a task" })
-            return;
+            return res.status(400).json({ "status": "error", "message": "taskId is required to delete a task" })
         }
         if (!userId) {
-            res.status(400).json({ "status": "error", "message": "userId is required to delete a task" })
-            return;
+            return res.status(400).json({ "status": "error", "message": "userId is required to delete a task" })
         }
         const user = await User.findByPk(userId)
         const task = await Task.findByPk(taskId)
         if (!user) {
-            res.status(400).json({ "status": "error", "message": `user with id:${userId} not found` })
-            return;
+            return res.status(400).json({ "status": "error", "message": `user with id: ${userId} not found` })
         }
         if (!task) {
-            res.status(400).json({ "status": "error", "message": `task with id:${taskId} not found` })
-            return;
+            return res.status(400).json({ "status": "error", "message": `task with id: ${taskId} not found` })
         }
-        await Assignment.create({ userId, taskId });
-        res.status(200).json({ "status": "success", "message": "Assignment created succesfully" })
+        await user.addTask(task);
+        return res.status(200).json({ "status": "success", "message": "Assignment created succesfully" })
 
     }
     async deassign(req, res) {
@@ -106,19 +102,22 @@ export class TaskController {
             userId = undefined,
         } = req.body
         if (!taskId) {
-            res.status(400).json({ "status": "error", "message": "taskId is required to delete a task" })
-            return;
+            return res.status(400).json({ "status": "error", "message": "taskId is required to delete a task" })
         }
         if (!userId) {
-            res.status(400).json({ "status": "error", "message": "userId is required to delete a task" })
-            return;
+            return res.status(400).json({ "status": "error", "message": "userId is required to delete a task" })
         }
         const assignment = await Assignment.findOne({ where: { userId, taskId } })
         if (!assignment) {
-            res.status(400).json({ "status": "error", "message": `Assignment with key (${userId},${taskId}) doesnt exist` })
+            return res.status(400).json({ "status": "error", "message": `Assignment with key (${userId},${taskId}) doesnt exist` })
         }
-        assignment!.destroy()
-        res.status(200).json({ "status": "success", "message": "Assignment deleted succesfully" })
+        const user = await User.findByPk(userId);
+        const task = await Task.findByPk(taskId);
+        if (!user || !task) {
+            throw new Error('User or Task not found');
+        }
+        user.removeTask(task);
+        return res.status(200).json({ "status": "success", "message": "Assignment deleted succesfully" })
     }
     async getAll(req, res) {
         const tasks = await Task.findAll()
@@ -163,12 +162,12 @@ export class TaskController {
         const authHeader = req.headers.authorization;
         const refreshToken = authHeader?.split(' ')[1];
         const payload = jwt.verify(refreshToken, process.env.REFRESH_TOKEN_SECRET!) as { userId: number, userType: string };
-
+        console.log(payload.userId, payload.userType);
 
         const user = await User.findByPk(payload.userId);
-        if (!user) res.status(400).json({ "status": "error", "message": "invalid token or user" })
+        if (!user) return res.status(400).json({ "status": "error", "message": "invalid token or user" })
 
-        const tasks = user!.getTasks();
+        const tasks = await user.getUserTasks();
 
         res.status(200).json(tasks)
     }
