@@ -16,6 +16,8 @@ const LoginPage: React.FC = () => {
                 method: "POST",
                 headers: {
                     "Content-Type": "application/json",
+                    // Authorization: `Bearer ${localStorage.getItem("token")}`, // Send token if available
+                    authorization: `Bearer ${localStorage.getItem("token")}`,
                 },
                 body: JSON.stringify({ email, password }),
             });
@@ -25,8 +27,8 @@ const LoginPage: React.FC = () => {
 
             const data = await response.json();
             localStorage.setItem("token", data.token); // Store token in localStorage
-            // navigate("/dashboard"); // Navigate to a dashboard or home page
             console.log("Login successful");
+            navigate("/homepage");
         } catch (err: any) {
             setError(err.message || "An error occurred");
         }
