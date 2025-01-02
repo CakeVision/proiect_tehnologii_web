@@ -33,10 +33,10 @@ class Task extends Model<TaskAttributes, TaskCreationAttributes> {
                     type: DataTypes.INTEGER,
                     allowNull: false,
                     field: 'id_creator',
-                    references: {
-                        model: 'Users',
-                        key: 'user_id'
-                    }
+                    //  references: {
+                    //      model: 'Users',
+                    //      key: 'user_id'
+                    //  }
                 }
             },
             {
@@ -49,7 +49,6 @@ class Task extends Model<TaskAttributes, TaskCreationAttributes> {
     }
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     static associate(models: any) {
-        Task.belongsTo(models.User, { foreignKey: 'id_creator' });
         Task.belongsToMany(models.User, { through: models.Assignment, foreignKey: 'taskId', otherKey: 'userId' });
     }
 }

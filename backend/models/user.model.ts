@@ -1,6 +1,6 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
 // import { Task } from '../models';
-import { Model, DataTypes, Sequelize } from 'sequelize';
+import { Model, DataTypes, Sequelize, BelongsToManyGetAssociationsMixin } from 'sequelize';
 import { Task } from './task.model'
 import { Token } from './token.model';
 import { Assignment } from './assignment.model';
@@ -21,37 +21,62 @@ interface UserAttributes {
   lastLogin: Date;
   managerId?: number
 }
+interface UserInstance extends Model<UserAttributes>, UserAttributes {
+  addTask: (task: Task) => Promise<void>;
+  getTasks: () => Promise<Task[]>;
+  setTasks: (tasks: Task[]) => Promise<void>;
+  removeTask: (task: Task) => Promise<void>;
+}
 
-interface UserCreationAttributes extends Omit<UserAttributes, 'id' | 'createdAt' | 'updatedAt'> {
+
+interface UserCreationAttributes extends Omit<UserAttributes, | 'createdAt' | 'updatedAt'> {
   password: string;
 }
 
 // eslint-disable-next-line @typescript-eslint/no-empty-object-type
 interface UserPublicAttributes extends Omit<UserAttributes, 'password' | 'refreshToken'> { }
 
-class User extends Model<UserAttributes, UserCreationAttributes> {
+class User extends Model<UserAttributes, UserCreationAttributes> implements UserInstance {
+
+  declare id: number;
+  declare name: string;
+  declare userType: string;
+  declare email: string;
+  declare password: string;
+  declare lastLogin: Date;
+  declare managerId?: number;
+
+  declare getTasks: BelongsToManyGetAssociationsMixin<Task>;  // Add this declaration
+  declare addTask: (task: Task) => Promise<void>;
+  declare setTasks: (tasks: Task[]) => Promise<void>;
+  declare removeTask: (task: Task) => Promise<void>;
   // /**
   //  * get full_name
   //  */
   // public get full_name():string {
   //     return this.full_name
   // }
-  public async getTasks(taskWhereOptions = {}) {
+  //public async getTasks(taskWhereOptions = {}) {
 
-    const tasks = await Task.findAll({
-      where: taskWhereOptions,
-      include: [{
-        model: User,
-        through: {
-          model: Assignment,
-        },
-        where: {
-          id: this.getDataValue('id')
-        }
-      }]
+  //  const tasks = await Task.findAll({
+  //    where: taskWhereOptions,
+  //    include: [{
+  //      model: User,
+  //      through: {
+  //        model: Assignment,
+  //      },
+  //      where: {
+  //        id: this.getDataValue('id')
+  //      }
+  //    }]
+  //  });
+
+  //  return tasks;
+  //}
+  public async getUserTasks(taskWhereOptions = {}) {
+    return this.getTasks({
+      where: taskWhereOptions
     });
-
-    return tasks;
   }
   public static isValidUserType(type: string): type is UserType {
     return Object.values(UserType).includes(type as UserType);
@@ -113,12 +138,10 @@ class User extends Model<UserAttributes, UserCreationAttributes> {
     )
     return User;
   }
-  //FIXME: May need to change type Model to any, but unsure
-  //TODO: Add association with Task
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   static associate(models: any) {
     User.belongsToMany(models.Task,
-      { through: models.Assignment, foreignKey: 'taskId', otherKey: 'userId' });
+      { through: models.Assignment, foreignKey: 'userId', otherKey: 'taskId' });
   }
 }
 
