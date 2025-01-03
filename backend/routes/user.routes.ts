@@ -1,5 +1,5 @@
 import express from 'express';
-import {User} from '../models/user.model';
+import { User } from '../models/user.model';
 
 const router = express.Router();
 
@@ -12,9 +12,9 @@ router.get('/', async (req, res) => {
     res.json(users);
   } catch (error) {
     console.error("Error fetching users:", error);
-    res.status(500).json({ 
+    res.status(500).json({
       error: error.message,
-      stack: process.env.NODE_ENV === 'development' ? error.stack : undefined 
+      stack: process.env.NODE_ENV === 'development' ? error.stack : undefined
     });
   }
 });
@@ -32,7 +32,7 @@ router.post('/', async (req, res) => {
 // Get user by ID
 router.get('/:id', async (req, res) => {
   try {
-    const user = await User.findOne({where : {id:req.params.id}});
+    const user = await User.findOne({ where: { id: req.params.id } });
     if (user) {
       res.json(user);
     } else {

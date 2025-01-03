@@ -16,6 +16,7 @@ const LoginPage: React.FC = () => {
                 method: "POST",
                 headers: {
                     "Content-Type": "application/json",
+                    authorization: `Bearer ${localStorage.getItem("token")}`,
                 },
                 body: JSON.stringify({ email, password }),
             });
@@ -25,18 +26,19 @@ const LoginPage: React.FC = () => {
 
             const data = await response.json();
             localStorage.setItem("token", data.token); // Store token in localStorage
-            // navigate("/dashboard"); // Navigate to a dashboard or home page
+            localStorage.setItem("refreshToken", data.refreshToken);
             console.log("Login successful");
+            navigate("/homepage");
         } catch (err: any) {
             setError(err.message || "An error occurred");
         }
     };
 
     return (
-        <div style={{ maxWidth: "400px", margin: "auto", padding: "20px" }}>
+        <div style={{ maxWidth: "400px", margin: "auto", padding: "20px", border: "1px solid #ddd", borderRadius: "5px", position: "absolute", top: "50%", left: "50%", transform: "translate(-50%, -50%)" }}>
             <h2>Login</h2>
             <form onSubmit={handleLogin}>
-                <div style={{ marginBottom: "10px" }}>
+                <div style={{ marginBottom: "10px", marginRight: "10px" }}>
                     <label htmlFor="email">Email:</label>
                     <input
                         type="email"
@@ -44,10 +46,10 @@ const LoginPage: React.FC = () => {
                         value={email}
                         onChange={(e) => setEmail(e.target.value)}
                         required
-                        style={{ width: "100%", padding: "8px", marginTop: "5px" }}
+                        style={{ width: "100%", paddingBottom: "8px", marginTop: "5px" }}
                     />
                 </div>
-                <div style={{ marginBottom: "10px" }}>
+                <div style={{ marginBottom: "10px", marginRight: "10px" }}>
                     <label htmlFor="password">Password:</label>
                     <input
                         type="password"
@@ -55,7 +57,7 @@ const LoginPage: React.FC = () => {
                         value={password}
                         onChange={(e) => setPassword(e.target.value)}
                         required
-                        style={{ width: "100%", padding: "8px", marginTop: "5px" }}
+                        style={{ width: "100%", paddingBottom: "8px", marginTop: "5px" }}
                     />
                 </div>
                 {error && <p style={{ color: "red" }}>{error}</p>}
