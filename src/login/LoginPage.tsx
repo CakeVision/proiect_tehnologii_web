@@ -16,7 +16,7 @@ const LoginPage: React.FC = () => {
                 method: "POST",
                 headers: {
                     "Content-Type": "application/json",
-                    authorization: `Bearer ${localStorage.getItem("token")}`,
+                    //authorization: `Bearer ${localStorage.getItem("token")}`,
                 },
                 body: JSON.stringify({ email, password }),
             });
@@ -46,7 +46,7 @@ const LoginPage: React.FC = () => {
                         value={email}
                         onChange={(e) => setEmail(e.target.value)}
                         required
-                        style={{ width: "100%", paddingBottom: "8px", marginTop: "5px" }}
+                        style={{ width: "100%", padding: "8px", marginTop: "5px" }}
                     />
                 </div>
                 <div style={{ marginBottom: "10px", marginRight: "10px" }}>
@@ -57,7 +57,7 @@ const LoginPage: React.FC = () => {
                         value={password}
                         onChange={(e) => setPassword(e.target.value)}
                         required
-                        style={{ width: "100%", paddingBottom: "8px", marginTop: "5px" }}
+                        style={{ width: "100%", padding: "8px", marginTop: "5px" }}
                     />
                 </div>
                 {error && <p style={{ color: "red" }}>{error}</p>}

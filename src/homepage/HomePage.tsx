@@ -14,6 +14,7 @@ const HomePage: React.FC = () => {
     const [searchQuery, setSearchQuery] = useState<string>("");
     const [filter, setFilter] = useState<string>("all");
     const [viewType, setViewType] = useState<"list" | "grid">("list");
+    const [userTypeFilter, setUserTypeFilter] = useState<string>("all");
 
     useEffect(() => {
         const fetchTasks = async () => {
@@ -88,6 +89,28 @@ const HomePage: React.FC = () => {
                 >
                     {viewType === "list" ? "Grid View" : "List View"}
                 </button>
+
+                {/* Filter Dropdown */}
+                <div style={{ position: "relative" }}>
+                    <select
+                        value={userTypeFilter}
+                        onChange={(e) => setUserTypeFilter(e.target.value)}
+                        style={{
+                            backgroundColor: "#242424",
+                            color: "#ddd",
+                            borderRadius: "5px",
+                            marginRight: "10px",
+                            padding: "5px 15px",
+                            cursor: "pointer",
+                            border: "1px solid #555",
+                        }}
+                    >
+                        <option value="all">Administrator</option>
+                        {/* Add more filters dynamically if needed */}
+                        <option value="1">Manager</option>
+                        <option value="2">User</option>
+                    </select>
+                </div>
 
                 {/* Filter Dropdown */}
                 <div style={{ position: "relative" }}>
