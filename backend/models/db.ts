@@ -9,8 +9,8 @@ console.log("Hello")
 const sequelize = new Sequelize({
   dialect: 'postgres',
   host: 'localhost', // or your database host
-  username: 'postgres',
-  password: undefined,
+  username: 'app_user',
+  password: 'secure_password123',
   database: 'taskappdb',
   logging: (msg) => console.log(`Sequelize: ${msg}`),
   define: {
