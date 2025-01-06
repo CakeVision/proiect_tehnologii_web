@@ -1,46 +1,18 @@
 import express from 'express';
 import { User } from '../models/user.model';
+import { UserController } from '../controllers/user.controller';
+import { authorize, UserType } from '../middleware/credentials.middleware';
 
 const router = express.Router();
+const userController = new UserController();
 
 // Get all users
-router.get('/', async (req, res) => {
-  try {
-    console.log("Attempting to fetch users...");
-    const users = await User.findAll();
-    console.log("Users fetched:", users);
-    res.json(users);
-  } catch (error) {
-    console.error("Error fetching users:", error);
-    res.status(500).json({
-      error: error.message,
-      stack: process.env.NODE_ENV === 'development' ? error.stack : undefined
-    });
-  }
-});
-
-// Create a new user
-router.post('/', async (req, res) => {
-  try {
-    const user = await User.create(req.body);
-    res.status(201).json(user);
-  } catch (error) {
-    res.status(400).json({ error: error.message });
-  }
-});
-
+router.get('/', authorize([UserType.ADMIN]), userController.getAll.bind(userController));
 // Get user by ID
-router.get('/:id', async (req, res) => {
-  try {
-    const user = await User.findOne({ where: { id: req.params.id } });
-    if (user) {
-      res.json(user);
-    } else {
-      res.status(404).json({ message: 'User not found' });
-    }
-  } catch (error) {
-    res.status(500).json({ error: error.message });
-  }
-});
-
+router.get('/:ids', authorize(), userController.getById.bind(userController));
+// Create a new user
+router.post('/', authorize([UserType.MANAGER, UserType.ADMIN]), userController.createUser.bind(userController));
+//modify user
+router.patch('/:id', authorize(), userController.modifyUser.bind(userController));
+router.delete('/:id', authorize(), userController.deleteUser.bind(userController));
 export default router;

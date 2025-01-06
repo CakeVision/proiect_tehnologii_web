@@ -50,29 +50,7 @@ class User extends Model<UserAttributes, UserCreationAttributes> implements User
   declare addTask: (task: Task) => Promise<void>;
   declare setTasks: (tasks: Task[]) => Promise<void>;
   declare removeTask: (task: Task) => Promise<void>;
-  // /**
-  //  * get full_name
-  //  */
-  // public get full_name():string {
-  //     return this.full_name
-  // }
-  //public async getTasks(taskWhereOptions = {}) {
 
-  //  const tasks = await Task.findAll({
-  //    where: taskWhereOptions,
-  //    include: [{
-  //      model: User,
-  //      through: {
-  //        model: Assignment,
-  //      },
-  //      where: {
-  //        id: this.getDataValue('id')
-  //      }
-  //    }]
-  //  });
-
-  //  return tasks;
-  //}
   public async getUserTasks(taskWhereOptions = {}) {
     return this.getTasks({
       where: taskWhereOptions
