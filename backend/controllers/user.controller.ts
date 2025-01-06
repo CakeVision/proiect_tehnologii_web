@@ -133,7 +133,7 @@ export class UserController {
                 "message": "Invalid user ID"
             });
         }
-        const count = User.destroy({
+        const count = await User.destroy({
             where: {
                 id: id,
             },
@@ -144,7 +144,7 @@ export class UserController {
                 "message": `Id: ${id}, not in db`,
             })
         }
-        return res.status(204)
+        return res.status(204).json();
     }
 
 }
