@@ -39,6 +39,7 @@ const HomePage: React.FC = () => {
             }
         };
 
+
         fetchTasks();
     }, []);
 
