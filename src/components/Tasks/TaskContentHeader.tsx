@@ -40,7 +40,7 @@ const ContentHeader: React.FC<ContentHeaderProps> = ({
                                                 {/* Left side stats/info */}
                                                 <div className="flex items-center gap-4">
                                                         <div className="text-sm text-gray-600 dark:text-gray-400">
-                                                                <span className="font-medium">Total Tasks:</span> 123
+                                                                <span className="font-medium">Total Tasks: </span> 
                                                         </div>
                                                         <div className="text-sm text-gray-600 dark:text-gray-400">
                                                                 <span className="font-medium">Active:</span> 45
