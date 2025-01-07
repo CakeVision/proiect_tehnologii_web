@@ -21,7 +21,7 @@ interface UserAttributes {
   lastLogin: Date;
   managerId?: number
 }
-interface UserInstance extends Model<UserAttributes>, UserAttributes {
+interface UserInstance extends Model<UserAttributes, UserCreationAttributes> {
   addTask: (task: Task) => Promise<void>;
   getTasks: () => Promise<Task[]>;
   setTasks: (tasks: Task[]) => Promise<void>;
@@ -29,7 +29,7 @@ interface UserInstance extends Model<UserAttributes>, UserAttributes {
 }
 
 
-interface UserCreationAttributes extends Omit<UserAttributes, | 'createdAt' | 'updatedAt'> {
+interface UserCreationAttributes extends Omit<UserAttributes, 'id' | 'createdAt' | 'updatedAt'> {
   password: string;
 }
 
