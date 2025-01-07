@@ -6,6 +6,8 @@ import './App.css'
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import LoginPage from "./login/LoginPage";
 import HomePage from "./homepage/HomePage";
+import UsersPage from './users/UsersPage';
+import AdminPage from './admin/AdminPage';
 
 function App() {
   // const [count, setCount] = useState(0)
@@ -14,6 +16,8 @@ function App() {
       <Routes>
         <Route path="/" element={<LoginPage />} />
         <Route path="/homepage" element={<HomePage />} />
+        <Route path="/users" element={<UsersPage />} />
+        <Route path='/admin' element={<AdminPage />} />
       </Routes>
     </Router>
   );
