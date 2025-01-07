@@ -103,6 +103,7 @@ button:focus-visible {
     --chart-5: 27 87% 67%;
     --radius: 0.5rem;
   }
+
   .dark {
     --background: 222.2 84% 4.9%;
     --foreground: 210 40% 98%;
@@ -135,6 +136,7 @@ button:focus-visible {
   * {
     @apply border-border;
   }
+
   body {
     @apply bg-background text-foreground;
   }

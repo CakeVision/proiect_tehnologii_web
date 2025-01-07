@@ -25,8 +25,9 @@ const LoginPage: React.FC = () => {
             }
 
             const data = await response.json();
-            localStorage.setItem("token", data.token); // Store token in localStorage
+            localStorage.setItem("token", data.token);
             localStorage.setItem("refreshToken", data.refreshToken);
+            localStorage.setItem("userEmail", email);
             console.log("Login successful");
             navigate("/homepage");
         } catch (err: any) {
