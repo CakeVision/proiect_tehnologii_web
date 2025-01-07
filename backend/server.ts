@@ -9,7 +9,7 @@ import { authorize, UserType } from './middleware/credentials.middleware';
 import { createEnvFile } from './gen_env';
 import cors from 'cors';
 import taskRoutes from './routes/task.routes'
-createEnvFile('./.env')
+//createEnvFile('./.env')
 
 dotenv.config();
 
