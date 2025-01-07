@@ -1,22 +1,27 @@
-import { Sequelize } from 'sequelize';
 import { Task } from './task.model';
 import { User, UserType } from './user.model';
 import { Assignment } from './assignment.model';
 import { Token } from './token.model';
+import { Sequelize } from 'sequelize';
+import dotenv from 'dotenv';
+
+dotenv.config();
 
 console.log("Hello")
-
-const sequelize = new Sequelize({
+const sequelize = new Sequelize(process.env.DATABASE_URL || '', {
   dialect: 'postgres',
-  host: 'localhost', // or your database host
-  username: 'postgres',
-  password: undefined,
-  database: 'taskappdb',
+  dialectOptions: {
+    ssl: {
+      require: true,
+      rejectUnauthorized: true
+    }
+  },
   logging: (msg) => console.log(`Sequelize: ${msg}`),
   define: {
-    timestamps: true // this will add createdAt and updatedAt fields
+    timestamps: true
   }
 });
+
 
 
 const models = {
@@ -244,8 +249,5 @@ async function syncDatabase() {
     console.error('Error synchronizing database:', error);
   }
 }
-
-// Run the sync
-// syncDatabase();
 
 export { sequelize, syncDatabase };
