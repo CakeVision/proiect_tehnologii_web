@@ -6,12 +6,13 @@
   "scripts": {
     "dev": "vite",
     "build:frontend": " vite build ",
-    "build:backend": "tsc -p ./backend/server.ts",
-    "build":"pnpm build:backend && pnpm build:frontend",
+    "build:backend": "tsx ./backend/server.ts",
+    "build": " pnpm build:frontend",
     "lint": "eslint .",
     "preview": "vite preview",
     "orm": "tsx ./backend/models/db.ts",
-    "server": "tsx ./backend/server.ts"
+    "server": "tsx ./backend/server.ts",
+    "start": "vite & tsx ./backend/server.ts"
   },
   "dependencies": {
     "@libsql/client": "^0.14.0",
@@ -22,6 +23,7 @@
     "clsx": "^2.1.1",
     "cors": "^2.8.5",
     "dotenv": "^16.4.7",
+    "esbuild": "^0.24.2",
     "express": "^4.21.1",
     "jsonwebtoken": "^9.0.2",
     "jsx": "^0.9.89",
