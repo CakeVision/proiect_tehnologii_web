@@ -5,7 +5,9 @@
   "type": "module",
   "scripts": {
     "dev": "vite",
-    "build": "tsx  ./backend/server.ts && vite build",
+    "build:frontend": " vite build ",
+    "build:backend": "tsc -p ./backend/server.ts",
+    "build":"pnpm build:backend && pnpm build:frontend",
     "lint": "eslint .",
     "preview": "vite preview",
     "orm": "tsx ./backend/models/db.ts",
