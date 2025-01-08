@@ -1,5 +1,8 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
+import dotenv from 'dotenv';
+
+dotenv.config();
 
 const LoginPage: React.FC = () => {
     const [email, setEmail] = useState("");
@@ -12,7 +15,7 @@ const LoginPage: React.FC = () => {
         setError(null);
 
         try {
-            const response = await fetch("http://localhost:3000/session/login", {
+            const response = await fetch(process.env.BACKEND_URL + "/session/login", {
                 method: "POST",
                 headers: {
                     "Content-Type": "application/json",
