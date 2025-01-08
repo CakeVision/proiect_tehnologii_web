@@ -6,11 +6,8 @@ import { syncDatabase } from './models/db';
 import testRoutes from './routes/test.routes'
 import adminRoutes from './routes/admin.routes'
 import { authorize, UserType } from './middleware/credentials.middleware';
-import { createEnvFile } from './gen_env';
 import cors from 'cors';
 import taskRoutes from './routes/task.routes'
-//createEnvFile('./.env')
-
 dotenv.config();
 
 const app = express();
