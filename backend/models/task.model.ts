@@ -14,7 +14,7 @@ interface TaskAttributes {
     description: string;
     status: TaskStatus;
 }
-interface TaskCreationAttributes extends Omit<TaskAttributes, 'id' | 'description' | 'createdAt' | 'updatedAt'> {
+interface TaskCreationAttributes extends Omit<TaskAttributes, 'id' | 'description' | 'status' | 'createdAt' | 'updatedAt'> {
 }
 
 class Task extends Model<TaskAttributes, TaskCreationAttributes> {

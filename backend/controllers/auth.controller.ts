@@ -160,7 +160,7 @@ export class AuthController {
     }
   }
 
-  private generateTokens(user: User) {
+  public generateTokens(user: User) {
     const accessToken = jwt.sign(
       {
         userId: user.getDataValue('id'),
