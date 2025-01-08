@@ -3,9 +3,8 @@ import { Task } from "../components/types";
 import ContentHeader from "../components/Tasks/TaskContentHeader";
 import { TaskList } from "@/components/Tasks/TaskList";
 import Sidebar from "@/components/sidebar/Sidebar";
-import dotenv from 'dotenv';
 
-dotenv.config();
+const backend_url = import.meta.env.BACKEND_URL
 
 const HomePage: React.FC = () => {
     const [tasks, setTasks] = useState<Task[]>([]);
@@ -27,7 +26,7 @@ const HomePage: React.FC = () => {
             }
 
             try {
-                const response = await fetch(process.env.BACKEND_URL + "/tasks/allOwned", {
+                const response = await fetch(backend_url + "/tasks/allOwned", {
                     method: "GET",
                     headers: {
                         "Content-Type": "application/json",
@@ -60,7 +59,7 @@ const HomePage: React.FC = () => {
             }
 
             try {
-                const response = await fetch(process.env.BACKEND_URL + "/users/", {
+                const response = await fetch(backend_url + "/users/", {
                     method: "GET",
                     headers: {
                         "Content-Type": "application/json",

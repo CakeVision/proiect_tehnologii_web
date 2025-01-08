@@ -1,8 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { Link } from "react-router-dom"; // Optional if you're using React Router
-import dotenv from 'dotenv';
 
-dotenv.config();
+const backend_url = import.meta.env.BACKEND_URL
 
 const Sidebar: React.FC = () => {
     const [loggedInUser, setLoggedInUser] = useState<{ name: string; userType: string } | null>(null);
@@ -17,7 +16,7 @@ const Sidebar: React.FC = () => {
             }
 
             try {
-                const response = await fetch(process.env.BACKEND_URL + "/users/", {
+                const response = await fetch(backend_url + "/users/", {
                     method: "GET",
                     headers: {
                         "Content-Type": "application/json",
