@@ -2,6 +2,8 @@ import { Task } from './task.model';
 import { User, UserType } from './user.model';
 import { Assignment } from './assignment.model';
 import { Token } from './token.model';
+import { Tags } from './tags.model';
+import { TagLink } from './tag_link.model';
 import { Sequelize } from 'sequelize';
 import dotenv from 'dotenv';
 
@@ -29,7 +31,9 @@ const models = {
   User: User.initModel(sequelize),
   Task: Task.initModel(sequelize),
   Assignment: Assignment.initModel(sequelize),
-  Token: Token.initModel(sequelize)
+  Token: Token.initModel(sequelize),
+  Tags: Tags.initModel(sequelize),
+  TagLink: TagLink.initModel(sequelize),
 };
 
 // Set up associations
@@ -37,6 +41,8 @@ User.associate(models);
 Task.associate(models);
 Assignment.associate(models)
 Token.associate(models);
+Tags.associate(models);
+TagLink.associate(models);
 
 async function create_mock_data() {
   // Insert Administrator
