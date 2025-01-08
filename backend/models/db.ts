@@ -5,9 +5,11 @@ import { Token } from './token.model';
 import { Tags } from './tags.model';
 import { TagLink } from './tag_link.model';
 import { Sequelize } from 'sequelize';
+import jwt from 'jsonwebtoken';
 import dotenv from 'dotenv';
 
 dotenv.config();
+
 
 console.log("Hello")
 const sequelize = new Sequelize(process.env.DATABASE_URL || '', {
@@ -24,7 +26,28 @@ const sequelize = new Sequelize(process.env.DATABASE_URL || '', {
   }
 });
 
+async function generateTokens(user: User) {
+  const accessToken = jwt.sign(
+    {
+      userId: user.getDataValue('id'),
+      email: user.getDataValue('email'),
+      userType: user.getDataValue('userType'),
+    },
+    process.env.JWT_SECRET!,
+    { expiresIn: '15m' }
+  );
 
+  const refreshToken = jwt.sign(
+    {
+      userId: user.getDataValue('id'),
+      userType: user.getDataValue('userType')
+    },
+    process.env.REFRESH_TOKEN_SECRET!,
+    { expiresIn: '7d' }
+  );
+
+  return { accessToken, refreshToken };
+}
 
 const models = {
   User: User.initModel(sequelize),
@@ -45,7 +68,7 @@ TagLink.associate(models);
 
 async function create_mock_data() {
   // Insert Administrator
-  const admin = await User.create({
+  await User.create({
     name: "gigel",
     userType: 'Administrator',
     email: 'admin@company.com',
@@ -53,17 +76,16 @@ async function create_mock_data() {
     lastLogin: new Date(),
     managerId: undefined
   });
-
   // Insert Managers
-  const managers = await User.bulkCreate([
+  await User.bulkCreate([
     {
       name: "gigel",
       email: 'manager1@company.com',
       password: 'hashed_password_2',
       userType: 'Manager',
       lastLogin: new Date(),
-    },
 
+    },
     {
       name: "gigel",
       email: 'manager2@company.com',
@@ -140,13 +162,15 @@ async function create_mock_data() {
       lastLogin: new Date(),
       managerId: 4
     }
+
   ]);
+
 
   // Insert Tasks
   await Task.bulkCreate([
     {
       idCreator: 2,
-      title: 'Implement new feature X'
+      title: 'Implement new feature X',
     },
     {
       idCreator: 2,
@@ -202,6 +226,7 @@ async function syncDatabase() {
       userType: UserType.USER,
       lastLogin: new Date()
     });
+    await generateTokens(user1);
 
     const user2 = await User.create({
       name: 'Jane Smith',
@@ -211,6 +236,8 @@ async function syncDatabase() {
       lastLogin: new Date()
     });
 
+    await generateTokens(user2);
+
     const user3 = await User.create({
       name: 'Bob Wilson',
       email: 'bob@example.com',
@@ -219,6 +246,7 @@ async function syncDatabase() {
       lastLogin: new Date()
     });
 
+    await generateTokens(user3);
     // Create tasks
     const task1 = await Task.create({
       title: 'Complete Project A',
