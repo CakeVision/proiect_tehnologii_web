@@ -1,6 +1,10 @@
 import React, { useEffect, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import Sidebar from "@/components/sidebar/Sidebar";
+import dotenv from 'dotenv';
+
+dotenv.config();
+
 
 interface User {
     id: string;
@@ -28,7 +32,7 @@ const UsersPage: React.FC = () => {
             }
 
             try {
-                const response = await fetch("http://localhost:3000/users/", {
+                const response = await fetch(process.env.BACKEND_URL + "/users/", {
                     method: "GET",
                     headers: {
                         "Content-Type": "application/json",
