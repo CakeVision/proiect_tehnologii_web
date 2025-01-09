@@ -2,7 +2,8 @@ import React, { useEffect, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import Sidebar from "@/components/sidebar/Sidebar";
 
-const backend_url = import.meta.env.BACKEND_URL
+// const backend_url = import.meta.env.BACKEND_URL
+const baseApiURL = "https://proiecttehnologiiweb-production.up.railway.app"
 
 
 interface User {
@@ -31,11 +32,12 @@ const UsersPage: React.FC = () => {
             }
 
             try {
-                const response = await fetch(backend_url + "/users/", {
+                const response = await fetch(baseApiURL + "/users/", {
                     method: "GET",
                     headers: {
                         "Content-Type": "application/json",
                         Authorization: `Bearer ${refreshToken}`,
+                        "Access-Control-Allow-Origin": "*",
                     },
                 });
 

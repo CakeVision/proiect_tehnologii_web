@@ -41,7 +41,7 @@ const LoginPage: React.FC = () => {
         <div style={{ maxWidth: "400px", margin: "auto", padding: "20px", border: "1px solid #ddd", borderRadius: "5px", position: "absolute", top: "50%", left: "50%", transform: "translate(-50%, -50%)" }}>
             <h2>Login</h2>
             <form onSubmit={handleLogin}>
-                <div style={{ marginBottom: "10px", marginRight: "10px" }}>
+                <div style={{ marginBottom: "10px" }}>
                     <label htmlFor="email">Email:</label>
                     <input
                         type="email"
@@ -52,7 +52,7 @@ const LoginPage: React.FC = () => {
                         style={{ width: "100%", padding: "8px", marginTop: "5px" }}
                     />
                 </div>
-                <div style={{ marginBottom: "10px", marginRight: "10px" }}>
+                <div style={{ marginBottom: "10px" }}>
                     <label htmlFor="password">Password:</label>
                     <input
                         type="password"
@@ -68,6 +68,12 @@ const LoginPage: React.FC = () => {
                     Login
                 </button>
             </form>
+            <h3 className="mt-8 mb-2">
+                Don't have an account?
+            </h3>
+            <button type="submit" style={{ padding: "10px", width: "100%" }}>
+                Register
+            </button>
         </div>
     );
 };
