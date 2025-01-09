@@ -12,7 +12,7 @@ const SearchBar: React.FC<SearchBarProps> = ({ searchQuery, onSearchChange }) =>
                         placeholder="Search tasks..."
                         value={searchQuery}
                         onChange={(e) => onSearchChange(e.target.value)}
-                        className="bg-[#242424] text-gray-300 rounded px-2 h-7 border border-gray-600 outline-none"
+                        className="bg-[#242424] text-gray-300 rounded px-2 h-7 border border-gray-500 outline-none transform transition-transform duration-300 hover:scale-105"
                 />
                 <span className="text-blue-500 cursor-pointer p-1">🔍</span>
         </div>

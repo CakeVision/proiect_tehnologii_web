@@ -19,6 +19,7 @@ export interface ContentHeaderProps {
         totalTasks: number; // Total number of tasks
         userTasks: number;  // Number of tasks for the selected user
         activeTasks: number; // Number of active tasks
+        onBurgerClick: () => void;
 }
 
 const ContentHeader: React.FC<ContentHeaderProps> = ({
@@ -37,28 +38,31 @@ const ContentHeader: React.FC<ContentHeaderProps> = ({
         totalTasks,
         userTasks,
         activeTasks,
+        onBurgerClick,
 }) => (
-        <div className="w-full px-6 mt-[5vh]">
-                <div className="max-w-screen-xl mx-auto">
-                        <div className="mb-8">
-                                <h1 className="text-2xl font-bold text-gray-300 dark:text-gray-200">Task Management</h1>
-                                <p className="text-sm text-gray-300 dark:text-gray-400 mt-1">Manage and track your team's tasks</p>
-                        </div>
-
-                        <div className="bg-white dark:bg-gray-800 rounded-lg shadow">
+        <div className="w-full">
+                <div className="max-w-screen mx-auto">
+                        <div className="rounded-lg shadow">
                                 {/* Header Content */}
-                                <div className="p-4 border-b border-gray-200 dark:border-gray-700 bg-gray-300">
+                                <div className="p-4 bg-[#121212]">
                                         <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
+                                                <button
+                                                        className="text-white bg-[#121212]"
+                                                        onClick={onBurgerClick}
+                                                        aria-label="Toggle Sidebar"
+                                                >
+                                                        ☰
+                                                </button>
                                                 {/* Left side stats/info */}
                                                 <div className="flex items-center gap-4">
-                                                        <div className="text-sm text-gray-600 dark:text-gray-400">
+                                                        <div className="text-sm text-gray-200">
                                                                 <span className="font-medium">Total Tasks: </span>{totalTasks}
                                                         </div>
-                                                        <div className="text-sm text-gray-600 dark:text-gray-400">
-                                                                <span className="font-medium">User Tasks:</span>{userTasks}
+                                                        <div className="text-sm text-gray-200">
+                                                                <span className="font-medium">User Tasks: </span>{userTasks}
                                                         </div>
-                                                        <div className="text-sm text-gray-600 dark:text-gray-400">
-                                                                <span className="font-medium">Active Tasks:</span>{activeTasks}
+                                                        <div className="text-sm text-gray-200">
+                                                                <span className="font-medium">Active Tasks: </span>{activeTasks}
                                                         </div>
                                                 </div>
 

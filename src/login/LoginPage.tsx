@@ -39,42 +39,47 @@ const LoginPage: React.FC = () => {
     };
 
     return (
-        <div style={{ maxWidth: "400px", margin: "auto", padding: "20px", border: "1px solid #ddd", borderRadius: "5px", position: "absolute", top: "50%", left: "50%", transform: "translate(-50%, -50%)" }}>
-            <h2>Login</h2>
-            <form onSubmit={handleLogin}>
-                <div style={{ marginBottom: "10px" }}>
-                    <label htmlFor="email">Email:</label>
-                    <input
-                        type="email"
-                        id="email"
-                        value={email}
-                        onChange={(e) => setEmail(e.target.value)}
-                        required
-                        style={{ width: "100%", padding: "8px", marginTop: "5px" }}
-                    />
-                </div>
-                <div style={{ marginBottom: "10px" }}>
-                    <label htmlFor="password">Password:</label>
-                    <input
-                        type="password"
-                        id="password"
-                        value={password}
-                        onChange={(e) => setPassword(e.target.value)}
-                        required
-                        style={{ width: "100%", padding: "8px", marginTop: "5px" }}
-                    />
-                </div>
-                {error && <p style={{ color: "red" }}>{error}</p>}
+        <div style={{ position: "absolute", top: "50%", left: "50%", transform: "translate(-50%, -50%)" }}>
+            <h1 className="text-2xl font-bold text-gray-200">Task Management</h1>
+            <p className="text-sm text-gray-200 mt-1 mb-4">Manage and track your team's tasks</p>
+
+            <div style={{ maxWidth: "400px", margin: "auto", padding: "16px", border: "1px solid #ddd", borderRadius: "5px" }}>
+                <h2>Login</h2>
+                <form onSubmit={handleLogin}>
+                    <div style={{ marginBottom: "10px" }}>
+                        <label htmlFor="email">Email:</label>
+                        <input
+                            type="email"
+                            id="email"
+                            value={email}
+                            onChange={(e) => setEmail(e.target.value)}
+                            required
+                            style={{ width: "100%", padding: "8px", marginTop: "5px" }}
+                        />
+                    </div>
+                    <div style={{ marginBottom: "10px" }}>
+                        <label htmlFor="password">Password:</label>
+                        <input
+                            type="password"
+                            id="password"
+                            value={password}
+                            onChange={(e) => setPassword(e.target.value)}
+                            required
+                            style={{ width: "100%", padding: "8px", marginTop: "5px" }}
+                        />
+                    </div>
+                    {error && <p style={{ color: "red" }}>{error}</p>}
+                    <button type="submit" style={{ padding: "10px", width: "100%" }}>
+                        Login
+                    </button>
+                </form>
+                <h3 className="mt-8 mb-2">
+                    Don't have an account?
+                </h3>
                 <button type="submit" style={{ padding: "10px", width: "100%" }}>
-                    Login
+                    Register
                 </button>
-            </form>
-            <h3 className="mt-8 mb-2">
-                Don't have an account?
-            </h3>
-            <button type="submit" style={{ padding: "10px", width: "100%" }}>
-                Register
-            </button>
+            </div>
         </div>
     );
 };

@@ -17,6 +17,7 @@ const UsersPage: React.FC = () => {
     const [users, setUsers] = useState<User[]>([]);
     const [error, setError] = useState<string | null>(null);
     const [userName, setUserName] = useState<string>("");
+    const [sidebarVisible, setSidebarVisible] = useState<boolean>(false);
 
     useEffect(() => {
         const name = localStorage.getItem("userName");
@@ -68,10 +69,10 @@ const UsersPage: React.FC = () => {
     const groupedUsers = groupUsersByType(users);
 
     return (
-        <div className="flex min-h-screen bg-gray-600">
+        <div className="flex min-h-screen bg-[#1E1E1E]">
             <Sidebar />
             <div className="max-w-screen-xl mx-auto p-6">
-                <h1 className="text-3xl font-semibold text-gray-900 mb-6">Users</h1>
+                <h1 className="text-3xl font-semibold text-gray-200 mb-6">Users</h1>
 
                 {error && (
                     <div className="bg-red-50 text-red-700 p-4 rounded-md mb-4">
@@ -82,14 +83,14 @@ const UsersPage: React.FC = () => {
                 <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
 
                     {Object.keys(groupedUsers).length === 0 ? (
-                        <div className="text-center py-12 bg-gray-50 rounded-lg">
-                            <p className="text-gray-500">No users found.</p>
+                        <div className="text-center py-12 bg-gray-200 rounded-lg">
+                            <p className="text-black">No users found.</p>
                         </div>
                     ) : (
                         Object.keys(groupedUsers).map((userType) => (
                             <div key={userType} className="mb-8">
                                 <h2 className="text-xl font-semibold text-gray-300">{userType}</h2>
-                                <ul className="divide-y divide-gray-200 bg-white rounded-lg shadow mt-4">
+                                <ul className="divide-y divide-gray-200 bg-gray-200 rounded-lg shadow mt-4">
                                     {groupedUsers[userType].map((user) => (
                                         <li key={user.id} className="px-4 py-3 flex justify-between items-center">
                                             <div>
