@@ -1,23 +1,23 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 
-
-
 const LoginPage: React.FC = () => {
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
     const [error, setError] = useState<string | null>(null);
     const navigate = useNavigate();
+    const baseApiURL = "https://proiecttehnologiiweb-production.up.railway.app"
 
     const handleLogin = async (event: React.FormEvent) => {
         event.preventDefault();
         setError(null);
 
         try {
-            const response = await fetch("https://proiecttehnologiiweb-production.up.railway.app/session/login", {
+            const response = await fetch(baseApiURL + "/session/login", {
                 method: "POST",
                 headers: {
                     "Content-Type": "application/json",
+                    "Access-Control-Allow-Origin": "*",
                 },
                 body: JSON.stringify({ email, password }),
             });
