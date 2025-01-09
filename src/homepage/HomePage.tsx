@@ -15,6 +15,7 @@ const HomePage: React.FC = () => {
     const [creatorFilter, setCreatorFilter] = useState<string>("all");
     const [users, setUsers] = useState<{ id: string; name: string }[]>([]);
     const [checkedTasks, setCheckedTasks] = useState<Set<string>>(new Set());
+    const baseApiURL = "https://proiecttehnologiiweb-production.up.railway.app"
 
     useEffect(() => {
         const fetchTasks = async () => {
@@ -25,11 +26,12 @@ const HomePage: React.FC = () => {
             }
 
             try {
-                const response = await fetch("/external/tasks/allOwned", {
+                const response = await fetch(baseApiURL + "/tasks/allOwned", {
                     method: "GET",
                     headers: {
                         "Content-Type": "application/json",
                         Authorization: `Bearer ${refreshToken}`,
+                        "Access-Control-Allow-Origin": "*",
                     },
                 });
 
@@ -58,11 +60,12 @@ const HomePage: React.FC = () => {
             }
 
             try {
-                const response = await fetch("/external/users/", {
+                const response = await fetch(baseApiURL + "/users/", {
                     method: "GET",
                     headers: {
                         "Content-Type": "application/json",
                         Authorization: `Bearer ${refreshToken}`,
+                        "Access-Control-Allow-Origin": "*",
                     },
                 });
 

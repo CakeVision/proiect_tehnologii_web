@@ -1,7 +1,8 @@
 import React, { useEffect, useState } from "react";
 import { Link } from "react-router-dom"; // Optional if you're using React Router
 
-const backend_url = import.meta.env.BACKEND_URL
+// const backend_url = import.meta.env.BACKEND_URL
+const baseApiURL = "https://proiecttehnologiiweb-production.up.railway.app"
 
 const Sidebar: React.FC = () => {
     const [loggedInUser, setLoggedInUser] = useState<{ name: string; userType: string } | null>(null);
@@ -16,11 +17,12 @@ const Sidebar: React.FC = () => {
             }
 
             try {
-                const response = await fetch(backend_url + "/users/", {
+                const response = await fetch(baseApiURL + "/users/", {
                     method: "GET",
                     headers: {
                         "Content-Type": "application/json",
                         Authorization: `Bearer ${refreshToken}`,
+                        "Access-Control-Allow-Origin": "*",
                     },
                 });
 
