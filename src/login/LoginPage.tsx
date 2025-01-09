@@ -1,7 +1,6 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 
-const backend_url = import.meta.env.BACKEND_URL
 
 
 const LoginPage: React.FC = () => {
@@ -15,11 +14,10 @@ const LoginPage: React.FC = () => {
         setError(null);
 
         try {
-            const response = await fetch(backend_url + "/session/login", {
+            const response = await fetch("https://proiecttehnologiiweb-production.up.railway.app/session/login", {
                 method: "POST",
                 headers: {
                     "Content-Type": "application/json",
-                    //authorization: `Bearer ${localStorage.getItem("token")}`,
                 },
                 body: JSON.stringify({ email, password }),
             });
@@ -28,6 +26,7 @@ const LoginPage: React.FC = () => {
             }
 
             const data = await response.json();
+            localStorage.setItem("currentUserName", data.user.name)
             localStorage.setItem("token", data.token);
             localStorage.setItem("refreshToken", data.refreshToken);
             localStorage.setItem("userEmail", email);

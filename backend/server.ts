@@ -1,3 +1,4 @@
+import https from 'https';
 import express from 'express';
 import dotenv from 'dotenv';
 import userRoutes from './routes/user.routes';
@@ -28,13 +29,17 @@ app.use('/admin', authorize([UserType.ADMIN]), adminRoutes)
 app.use('/session', sessionRoutes)
 app.use('/users', userRoutes)
 app.use('/tasks', taskRoutes)
-app.listen(PORT, () => {
+//app.listen(PORT, () => {
+//  syncDatabase()
+//    .then(() => {
+//      console.log('Database connection established successfully.');
+//    })
+//    .catch(err => {
+//      console.error('Unable to connect to the database:', err);
+//    });
+//  console.log(`Server is running on port ${PORT}`);
+//});
+https.createServer(app).listen(PORT || 3000, () => {
   syncDatabase()
-    .then(() => {
-      console.log('Database connection established successfully.');
-    })
-    .catch(err => {
-      console.error('Unable to connect to the database:', err);
-    });
-  console.log(`Server is running on port ${PORT}`);
+  console.log('Secure server running on https://localhost:3000');
 });

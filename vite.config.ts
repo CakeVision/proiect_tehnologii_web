@@ -9,5 +9,14 @@ export default defineConfig({
       "@": path.resolve(__dirname, "./src"),
     },
   },
+  server: {
+    proxy: {
+      '/external': {
+        target: "https://proiecttehnologiiweb-production.up.railway.app",
+        changeOrigin: true,
+        rewrite: (path) => path.replace(/^\/external/, '')
+      }
+    },
+  },
 })
 
