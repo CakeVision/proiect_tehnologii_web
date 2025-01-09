@@ -15,7 +15,13 @@ const HomePage: React.FC = () => {
     const [creatorFilter, setCreatorFilter] = useState<string>("all");
     const [users, setUsers] = useState<{ id: string; name: string }[]>([]);
     const [checkedTasks, setCheckedTasks] = useState<Set<string>>(new Set());
+    const [userType, setUserType] = useState<string | null>(null);
     const baseApiURL = "https://proiecttehnologiiweb-production.up.railway.app"
+
+    useEffect(() => {
+        const storedUserType = localStorage.getItem("userType");
+        if (storedUserType) setUserType(storedUserType);
+    }, []);
 
     useEffect(() => {
         const fetchTasks = async () => {
@@ -51,11 +57,16 @@ const HomePage: React.FC = () => {
     }, []);
 
     useEffect(() => {
-        // Fetch users
         const fetchUsers = async () => {
             const refreshToken = localStorage.getItem("refreshToken");
+            const userType = localStorage.getItem("userType");
             if (!refreshToken) {
                 setError("User is not logged in.");
+                return;
+            }
+
+            if (userType !== "Administrator") {
+                console.log("Non-administrator user. Skipping fetchUsers.");
                 return;
             }
 
@@ -117,6 +128,7 @@ const HomePage: React.FC = () => {
             <div className="w-full m-0">
                 <ContentHeader
                     viewType={viewType}
+                    userType={userType}
                     userTypeFilter={userTypeFilter}
                     filter={filter}
                     creatorFilter={creatorFilter}
