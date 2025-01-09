@@ -4,7 +4,6 @@ import ContentHeader from "../components/Tasks/TaskContentHeader";
 import { TaskList } from "@/components/Tasks/TaskList";
 import Sidebar from "@/components/sidebar/Sidebar";
 
-const backend_url = import.meta.env.BACKEND_URL
 
 const HomePage: React.FC = () => {
     const [tasks, setTasks] = useState<Task[]>([]);
@@ -26,7 +25,7 @@ const HomePage: React.FC = () => {
             }
 
             try {
-                const response = await fetch(backend_url + "/tasks/allOwned", {
+                const response = await fetch("/external/tasks/allOwned", {
                     method: "GET",
                     headers: {
                         "Content-Type": "application/json",
@@ -59,7 +58,7 @@ const HomePage: React.FC = () => {
             }
 
             try {
-                const response = await fetch(backend_url + "/users/", {
+                const response = await fetch("/external/users/", {
                     method: "GET",
                     headers: {
                         "Content-Type": "application/json",
