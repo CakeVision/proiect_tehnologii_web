@@ -26,10 +26,11 @@ const LoginPage: React.FC = () => {
             }
 
             const data = await response.json();
-            localStorage.setItem("currentUserName", data.user.name)
             localStorage.setItem("token", data.token);
             localStorage.setItem("refreshToken", data.refreshToken);
             localStorage.setItem("userEmail", email);
+            localStorage.setItem("userName", data.user.name);
+            localStorage.setItem("userType", data.user.userType);
             console.log("Login successful");
             navigate("/homepage");
         } catch (err: any) {

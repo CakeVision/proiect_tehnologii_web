@@ -5,6 +5,7 @@ import SearchBar from '../common/SearchBar';
 
 export interface ContentHeaderProps {
         viewType: "list" | "grid";
+        userType: string | null;
         userTypeFilter: string;
         filter: string;
         searchQuery: string;
@@ -23,6 +24,7 @@ export interface ContentHeaderProps {
 const ContentHeader: React.FC<ContentHeaderProps> = ({
         viewType,
         //   userTypeFilter,
+        userType,
         filter,
         creatorFilter,
         searchQuery,
@@ -64,11 +66,13 @@ const ContentHeader: React.FC<ContentHeaderProps> = ({
                                                 <div className="flex flex-wrap items-center gap-3 ml-auto">
                                                         <ViewToggleButton viewType={viewType} onToggle={onViewToggle} />
 
-                                                        <CreatorFilterDropdown
-                                                                value={creatorFilter}
-                                                                onChange={onCreatorFilterChange}
-                                                                creators={creators}
-                                                        />
+                                                        {userType === "Administrator" && (
+                                                                <CreatorFilterDropdown
+                                                                        value={creatorFilter}
+                                                                        onChange={onCreatorFilterChange}
+                                                                        creators={creators}
+                                                                />
+                                                        )}
 
                                                         <SearchBar
                                                                 searchQuery={searchQuery}
