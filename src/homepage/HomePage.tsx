@@ -16,6 +16,7 @@ const HomePage: React.FC = () => {
     const [users, setUsers] = useState<{ id: string; name: string }[]>([]);
     const [checkedTasks, setCheckedTasks] = useState<Set<string>>(new Set());
     const [userType, setUserType] = useState<string | null>(null);
+    const [sidebarVisible, setSidebarVisible] = useState<boolean>(false);
     const baseApiURL = "https://proiecttehnologiiweb-production.up.railway.app"
 
     useEffect(() => {
@@ -111,8 +112,6 @@ const HomePage: React.FC = () => {
         });
     };
 
-
-
     const filteredTasks = tasks.filter((task) => {
         if (filter !== "all" && task.idCreator.toString() !== filter) return false;
         if (creatorFilter !== "all" && task.idCreator.toString() !== creatorFilter) return false;
@@ -123,8 +122,8 @@ const HomePage: React.FC = () => {
     const activeTasksCount = checkedTasks.size;
 
     return (
-        <div className="flex min-h-screen bg-gray-600">
-            <Sidebar />
+        <div className="flex min-h-screen bg-[#1E1E1E]">
+            {sidebarVisible && <Sidebar />}
             <div className="w-full m-0">
                 <ContentHeader
                     viewType={viewType}
@@ -142,7 +141,7 @@ const HomePage: React.FC = () => {
                     totalTasks={tasks.length}
                     userTasks={tasksForSelectedUser}
                     activeTasks={activeTasksCount}
-                />
+                    onBurgerClick={() => setSidebarVisible(!sidebarVisible)} />
                 <TaskList
                     tasks={filteredTasks}
                     viewType={viewType}

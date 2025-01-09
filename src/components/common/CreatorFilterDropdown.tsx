@@ -15,7 +15,7 @@ const CreatorFilterDropdown: React.FC<CreatorFilterDropdownProps> = ({
         <select
             value={value}
             onChange={(e) => onChange(e.target.value)}
-            className="bg-[#242424] text-gray-300 rounded px-3 mr-2 h-7 text-sm flex items-center font-normal border border-gray-600 hover:bg-gray-700"
+            className="bg-[#242424] text-gray-300 rounded px-3 mr-2 h-7 text-sm flex items-center font-normal border border-gray-600 hover:bg-gray-700 hover:text-gray-300"
         >
             <option value="all">All Tasks</option>
             {creators.map((creator) => (
