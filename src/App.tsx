@@ -8,6 +8,7 @@ import LoginPage from "./login/LoginPage";
 import HomePage from "./homepage/HomePage";
 import UsersPage from './users/UsersPage';
 import AdminPage from './admin/AdminPage';
+import RegisterForm from './login/RegisterForm';
 
 function App() {
   // const [count, setCount] = useState(0)
@@ -15,6 +16,7 @@ function App() {
     <Router>
       <Routes>
         <Route path="/" element={<LoginPage />} />
+        <Route path="/register" element={<RegisterForm />} />
         <Route path="/homepage" element={<HomePage />} />
         <Route path="/users" element={<UsersPage />} />
         <Route path='/admin' element={<AdminPage />} />

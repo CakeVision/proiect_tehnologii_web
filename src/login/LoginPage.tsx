@@ -38,6 +38,11 @@ const LoginPage: React.FC = () => {
         }
     };
 
+    async function handleRegister(event: MouseEvent): void {
+        event.preventDefault();
+        navigate("/register");
+    }
+
     return (
         <div style={{ position: "absolute", top: "50%", left: "50%", transform: "translate(-50%, -50%)" }}>
             <h1 className="text-2xl font-bold text-gray-200">Task Management</h1>
@@ -76,7 +81,7 @@ const LoginPage: React.FC = () => {
                 <h3 className="mt-8 mb-2">
                     Don't have an account?
                 </h3>
-                <button type="submit" style={{ padding: "10px", width: "100%" }}>
+                <button type="submit" style={{ padding: "10px", width: "100%" }} onClick={handleRegister}>
                     Register
                 </button>
             </div>
