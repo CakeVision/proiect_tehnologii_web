@@ -7,7 +7,6 @@ import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import LoginPage from "./login/LoginPage";
 import HomePage from "./homepage/HomePage";
 import UsersPage from './users/UsersPage';
-import AdminPage from './admin/AdminPage';
 import RegisterForm from './login/RegisterForm';
 
 function App() {
@@ -19,7 +18,6 @@ function App() {
         <Route path="/register" element={<RegisterForm />} />
         <Route path="/homepage" element={<HomePage />} />
         <Route path="/users" element={<UsersPage />} />
-        <Route path='/admin' element={<AdminPage />} />
       </Routes>
     </Router>
   );

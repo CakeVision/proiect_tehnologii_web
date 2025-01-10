@@ -38,7 +38,7 @@ const LoginPage: React.FC = () => {
         }
     };
 
-    async function handleRegister(event: MouseEvent): void {
+    async function handleRegister(event: React.MouseEvent<HTMLButtonElement>): Promise<void> {
         event.preventDefault();
         navigate("/register");
     }
