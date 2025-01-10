@@ -146,5 +146,31 @@ export class UserController {
         }
         return res.status(204).json();
     }
-
+    async getManagedUsers(req,res) {
+        const id: number = Number(req.params.id)
+        if (!id || id < 0) {
+            return res.status(400).json({
+                "status": "Error",
+                "message": "Invalid user ID"
+            });
+        }
+        const users = await User.findAll(
+            {
+                where:{
+                    "managerId": id
+                }
+            }
+        )
+        if(!users){
+            return res.status(404).json({
+                "status": "Error",
+                "message": `Id: ${id}, not in db`,
+            })
+        }
+        return res.status(200).json({
+            "status": "Success",
+            "message": "User updated successfully",
+            "result":users,
+        })
+    }
 }
