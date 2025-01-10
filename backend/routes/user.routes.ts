@@ -10,6 +10,8 @@ const userController = new UserController();
 router.get('/', authorize([UserType.ADMIN]), userController.getAll.bind(userController));
 // Get user by ID
 router.get('/:ids', authorize(), userController.getById.bind(userController));
+//getUsers where id = managedId
+router.get('/managed/:id', authorize(), userController.getManagedUsers.bind(userController));
 // Create a new user
 router.post('/', authorize([UserType.MANAGER, UserType.ADMIN]), userController.createUser.bind(userController));
 //modify user
