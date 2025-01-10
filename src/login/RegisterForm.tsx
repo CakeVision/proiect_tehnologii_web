@@ -132,9 +132,7 @@ const RegisterForm = () => {
                 name="name"
                 type="text"
                 required
-                className="mt-1 block w-full rounded-md border border-gray-300 
-                px-3 py-2 shadow-sm 
-                bg-[#1a1a1a] border border-[#1a1a1a]"
+                className="mt-1 block w-full rounded-md px-3 py-2 shadow-sm bg-[#1a1a1a] border border-[#1a1a1a]"
                 value={formData.name}
                 onChange={handleChange}
               />
@@ -152,9 +150,7 @@ const RegisterForm = () => {
                 name="email"
                 type="email"
                 required
-                className="mt-1 block w-full rounded-md border 
-                border-gray-300 px-3 py-2 shadow-sm focus:border-blue-500
-                bg-[#1a1a1a] border border-[#1a1a1a]"
+                className="mt-1 block w-full rounded-md px-3 py-2 shadow-sm focus:border-blue-500 bg-[#1a1a1a] border border-[#1a1a1a]"
                 value={formData.email}
                 onChange={handleChange}
               />
@@ -172,8 +168,7 @@ const RegisterForm = () => {
                 name="userType"
                 value={formData.userType}
                 onChange={(e) => handleChange(e as any)}
-                className="mt-1 block w-full rounded-md border border-gray-300
-                 px-3 py-2 shadow-sm bg-[#1a1a1a] border border-[#1a1a1a]"
+                className="mt-1 block w-full rounded-md px-3 py-2 shadow-sm bg-[#1a1a1a] border border-[#1a1a1a]"
               >
                 <option value="Executor">Executor</option>
                 <option value="Manager">Manager</option>
@@ -190,9 +185,7 @@ const RegisterForm = () => {
                 name="password"
                 type="password"
                 required
-                className="mt-1 block w-full rounded-md border border-gray-300
-                 px-3 py-2 shadow-sm
-                bg-[#1a1a1a] border border-[#1a1a1a]"
+                className="mt-1 block w-full rounded-md px-3 py-2 shadow-sm bg-[#1a1a1a] border border-[#1a1a1a]"
                 value={formData.password}
                 onChange={handleChange}
               />
@@ -210,9 +203,7 @@ const RegisterForm = () => {
                 name="confirmPassword"
                 type="password"
                 required
-                className="mt-1 block w-full rounded-md
-                 px-3 py-2 shadow-sm
-                bg-[#1a1a1a] border border-[#1a1a1a]"
+                className="mt-1 block w-full rounded-md px-3 py-2 shadow-sm bg-[#1a1a1a] border border-[#1a1a1a]"
                 value={formData.confirmPassword}
                 onChange={handleChange}
               />
@@ -225,9 +216,7 @@ const RegisterForm = () => {
           <div>
             <button
               type="submit"
-              className="w-full flex justify-center py-2 px-4 border border-transparent
-               rounded-md shadow-sm text-sm font-medium text-white bg-[#111111]
-                focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
+              className="w-full flex justify-center py-3 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-[#111111] focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
             >
               Sign up
             </button>
