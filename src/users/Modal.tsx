@@ -20,7 +20,7 @@ const Modal = ({ isOpen, onClose, user, onSave }: ModalProps) => {
     const [editedId, setEditedId] = useState(user.id);
     const [selectedUserType, setSelectedUserType] = useState(user.userType);
 
-    const userTypes = ['administrator', 'executor', 'manager'];
+    const userTypes = ['Administrator', 'Executor', 'Manager'];
 
     const handleIdChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         setEditedId(e.target.value);
