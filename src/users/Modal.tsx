@@ -59,7 +59,7 @@ const Modal = ({ isOpen, onClose, user, onSave, onDelete }: ModalProps) => {
                                 type="text"
                                 value={editedName}
                                 onChange={handleNameChange}
-                                className="w-full border border-gray-300 rounded-md px-2 py-1 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                                className="w-full border border-gray-200 rounded-md px-2 py-1 focus:outline-none focus:ring-2 focus:ring-blue-500"
                             />
                         </div>
                         
@@ -71,7 +71,7 @@ const Modal = ({ isOpen, onClose, user, onSave, onDelete }: ModalProps) => {
                             <select 
                                 value={selectedUserType}
                                 onChange={handleUserTypeChange}
-                                className="w-full border border-gray-300 rounded-md px-2 py-1 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                                className="w-full border border-gray-200 rounded-md px-2 py-1 focus:outline-none focus:ring-2 focus:ring-blue-500"
                             >
                                 {userTypes.map(type => (
                                     <option key={type} value={type}>
