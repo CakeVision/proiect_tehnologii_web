@@ -17,11 +17,13 @@ const HomePage: React.FC = () => {
     const [checkedTasks, setCheckedTasks] = useState<Set<string>>(new Set());
     const [userType, setUserType] = useState<string | null>(null);
     const [sidebarVisible, setSidebarVisible] = useState<boolean>(false);
+
     const baseApiURL = "https://proiecttehnologiiweb-production.up.railway.app"
 
     useEffect(() => {
         const storedUserType = localStorage.getItem("userType");
-        if (storedUserType) setUserType(storedUserType);
+        if (storedUserType) 
+            setUserType(storedUserType);
     }, []);
 
     useEffect(() => {
