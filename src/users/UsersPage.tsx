@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import Sidebar from "@/components/sidebar/Sidebar";
+import Modal from "./Modal";
 
 const baseApiURL = "https://proiecttehnologiiweb-production.up.railway.app";
 
@@ -11,50 +12,6 @@ interface User {
     userType: string;
 }
 
-// Custom Modal Component
-const Modal = ({ isOpen, onClose, user }: { isOpen: boolean; onClose: () => void; user: User | null }) => {
-    if (!isOpen || !user) return null;
-
-    return (
-        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
-            <div className="bg-white rounded-lg p-6 max-w-md w-full mx-4">
-                <div className="flex justify-between items-center mb-4">
-                    <h2 className="text-xl font-bold text-gray-900">User Details</h2>
-                    <button 
-                        onClick={onClose}
-                        className="text-gray-500 hover:text-gray-700"
-                    >
-                        ✕
-                    </button>
-                </div>
-                <div className="space-y-4">
-                    <div className="grid grid-cols-2 gap-2">
-                        <div className="font-semibold text-gray-700">Name:</div>
-                        <div className="text-gray-900">{user.name}</div>
-                        
-                        <div className="font-semibold text-gray-700">Email:</div>
-                        <div className="text-gray-900">{user.email}</div>
-                        
-                        <div className="font-semibold text-gray-700">User Type:</div>
-                        <div className="text-gray-900">{user.userType}</div>
-                        
-                        <div className="font-semibold text-gray-700">ID:</div>
-                        <div className="text-gray-900">{user.id}</div>
-                    </div>
-                </div>
-                <div className="mt-6 flex justify-end">
-                    <button
-                        onClick={onClose}
-                        className="px-4 py-2 bg-gray-200 text-gray-800 rounded-md hover:bg-gray-300 transition-colors"
-                    >
-                        Close
-                    </button>
-                </div>
-            </div>
-        </div>
-    );
-};
-
 const UsersPage: React.FC = () => {
     const [users, setUsers] = useState<User[]>([]);
     const [error, setError] = useState<string | null>(null);
@@ -62,42 +19,70 @@ const UsersPage: React.FC = () => {
     const [selectedUser, setSelectedUser] = useState<User | null>(null);
     const [isModalOpen, setIsModalOpen] = useState(false);
 
+    const fetchUsers = async () => {
+        const refreshToken = localStorage.getItem("refreshToken");
+        if (!refreshToken) {
+            setError("User is not logged in.");
+            return;
+        }
+
+        try {
+            const response = await fetch(baseApiURL + "/users/", {
+                method: "GET",
+                headers: {
+                    "Content-Type": "application/json",
+                    Authorization: `Bearer ${refreshToken}`,
+                    "Access-Control-Allow-Origin": "*",
+                },
+            });
+
+            if (!response.ok) {
+                throw new Error("Failed to fetch users");
+            }
+
+            const data = await response.json();
+            setUsers(data);
+        } catch (err: any) {
+            setError(err.message || "An error occurred while fetching users.");
+        }
+    };
+
     useEffect(() => {
         const name = localStorage.getItem("userName");
         if (name) {
             setUserName(name);
         }
-
-        const fetchUsers = async () => {
-            const refreshToken = localStorage.getItem("refreshToken");
-            if (!refreshToken) {
-                setError("User is not logged in.");
-                return;
-            }
-
-            try {
-                const response = await fetch(baseApiURL + "/users/", {
-                    method: "GET",
-                    headers: {
-                        "Content-Type": "application/json",
-                        Authorization: `Bearer ${refreshToken}`,
-                        "Access-Control-Allow-Origin": "*",
-                    },
-                });
-
-                if (!response.ok) {
-                    throw new Error("Failed to fetch users");
-                }
-
-                const data = await response.json();
-                setUsers(data);
-            } catch (err: any) {
-                setError(err.message || "An error occurred while fetching users.");
-            }
-        };
-
         fetchUsers();
     }, []);
+
+    const handleUpdateUser = async (updatedUser: User) => {
+        const refreshToken = localStorage.getItem("refreshToken");
+        if (!refreshToken) {
+            setError("User is not logged in.");
+            return;
+        }
+
+        try {
+            const response = await fetch(`${baseApiURL}/users/${updatedUser.id}`, {
+                method: "PUT",
+                headers: {
+                    "Content-Type": "application/json",
+                    Authorization: `Bearer ${refreshToken}`,
+                    "Access-Control-Allow-Origin": "*",
+                },
+                body: JSON.stringify(updatedUser)
+            });
+
+            if (!response.ok) {
+                throw new Error("Failed to update user");
+            }
+
+            await fetchUsers();
+            handleCloseModal();
+        } catch (err: any) {
+            setError(err.message || "An error occurred while updating user.");
+        }
+    };
 
     const groupUsersByType = (users: User[]) => {
         return users.reduce((grouped, user) => {
@@ -119,7 +104,6 @@ const UsersPage: React.FC = () => {
         setSelectedUser(null);
     };
 
-    // Add event listener for escape key
     useEffect(() => {
         const handleEscKey = (event: KeyboardEvent) => {
             if (event.key === 'Escape') {
@@ -183,6 +167,7 @@ const UsersPage: React.FC = () => {
                     isOpen={isModalOpen}
                     onClose={handleCloseModal}
                     user={selectedUser}
+                    onSave={handleUpdateUser}
                 />
             </div>
         </div>
