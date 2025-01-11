@@ -22,39 +22,60 @@ const HomePage: React.FC = () => {
 
     useEffect(() => {
         const storedUserType = localStorage.getItem("userType");
-        if (storedUserType) 
+        if (storedUserType)
             setUserType(storedUserType);
     }, []);
 
     useEffect(() => {
         const fetchTasks = async () => {
             const refreshToken = localStorage.getItem("refreshToken");
+            const storedUserType = localStorage.getItem("userType");
             if (!refreshToken) {
                 setError("User is not logged in.");
                 return;
             }
 
             try {
-                const response = await fetch(baseApiURL + "/tasks/allOwned", {
-                    method: "GET",
-                    headers: {
-                        "Content-Type": "application/json",
-                        Authorization: `Bearer ${refreshToken}`,
-                        "Access-Control-Allow-Origin": "*",
-                    },
-                });
+                let filteredTasks = [];
+                if (storedUserType === "Administrator") {
+                    const response = await fetch(baseApiURL + "/tasks/all", {
+                        method: "GET",
+                        headers: {
+                            "Content-Type": "application/json",
+                            Authorization: `Bearer ${refreshToken}`,
+                            "Access-Control-Allow-Origin": "*",
+                        },
+                    });
 
-                if (!response.ok) {
-                    throw new Error("Failed to fetch tasks");
+                    if (!response.ok) {
+                        throw new Error("Failed to fetch tasks");
+                    }
+
+                    const data = await response.json();
+                    filteredTasks = data;
                 }
+                else if (storedUserType === "Executor") {
+                    const response = await fetch(baseApiURL + "/tasks/allOwned", {
+                        method: "GET",
+                        headers: {
+                            "Content-Type": "application/json",
+                            Authorization: `Bearer ${refreshToken}`,
+                            "Access-Control-Allow-Origin": "*",
+                        },
+                    });
 
-                const data = await response.json();
-                setTasks(data);
+                    if (!response.ok) {
+                        throw new Error("Failed to fetch tasks");
+                    }
+
+                    const data = await response.json();
+                    filteredTasks = data;
+                }
+                setTasks(filteredTasks);
             } catch (err: any) {
                 setError(err.message || "An error occurred while fetching tasks.");
             }
         };
-
 
         fetchTasks();
     }, []);

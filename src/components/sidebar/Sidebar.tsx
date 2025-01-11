@@ -46,6 +46,14 @@ const Sidebar: React.FC = () => {
                         Users Page
                     </Link>
                 )}
+                {userType === "Manager" && (
+                    <Link
+                        to="/manager"
+                        className="bg-[#242424] text-gray-300 rounded px-3 mr-2 h-7 text-sm grid place-items-center font-normal border border-gray-600 hover:bg-gray-700 hover:text-gray-300"
+                    >
+                        Manager Page
+                    </Link>
+                )}
             </div>
         </div>
     );
