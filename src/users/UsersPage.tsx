@@ -84,6 +84,35 @@ const UsersPage: React.FC = () => {
         }
     };
 
+    const handleDeleteUser = async (updatedUser: User) => {
+        const refreshToken = localStorage.getItem("refreshToken");
+        if (!refreshToken) {
+            setError("User is not logged in.");
+            return;
+        }
+
+        try {
+            const response = await fetch(`${baseApiURL}/users/${updatedUser.id}`, {
+                method: "DELETE",
+                headers: {
+                    "Content-Type": "application/json",
+                    Authorization: `Bearer ${refreshToken}`,
+                    "Access-Control-Allow-Origin": "*",
+                },
+                body: JSON.stringify(updatedUser)
+            });
+
+            if (!response.ok) {
+                throw new Error("Failed to update user");
+            }
+
+            await fetchUsers();
+            handleCloseModal();
+        } catch (err: any) {
+            setError(err.message || "An error occurred while updating user.");
+        }
+    }
+
     const groupUsersByType = (users: User[]) => {
         return users.reduce((grouped, user) => {
             if (!grouped[user.userType]) {
@@ -168,6 +197,7 @@ const UsersPage: React.FC = () => {
                     onClose={handleCloseModal}
                     user={selectedUser}
                     onSave={handleUpdateUser}
+                    onDelete={handleDeleteUser}
                 />
             </div>
         </div>
