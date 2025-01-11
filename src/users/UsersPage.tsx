@@ -172,10 +172,10 @@ const UsersPage: React.FC = () => {
                         Object.keys(groupedUsers).map((userType) => (
                             <div key={userType} className="mb-8">
                                 <h2 className="text-xl font-semibold text-gray-300">{userType}</h2>
-                                <ul className="divide-y divide-gray-200 bg-gray-200 rounded-lg shadow mt-4">
+                                <ul className="divide-y divide-gray-300 bg-gray-200 rounded-lg shadow mt-4">
                                     {groupedUsers[userType].map((user) => (
-                                        <li 
-                                            key={user.id} 
+                                        <li
+                                            key={user.id}
                                             className="px-4 py-3 flex justify-between items-center hover:bg-gray-100 cursor-pointer transition-colors duration-200"
                                             onClick={() => handleUserClick(user)}
                                         >
@@ -192,7 +192,7 @@ const UsersPage: React.FC = () => {
                     )}
                 </div>
 
-                <Modal 
+                <Modal
                     isOpen={isModalOpen}
                     onClose={handleCloseModal}
                     user={selectedUser}

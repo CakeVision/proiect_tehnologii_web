@@ -29,6 +29,7 @@ const LoginPage: React.FC = () => {
             localStorage.setItem("token", data.token);
             localStorage.setItem("refreshToken", data.refreshToken);
             localStorage.setItem("userEmail", email);
+            localStorage.setItem("userId", data.user.id);
             localStorage.setItem("userName", data.user.name);
             localStorage.setItem("userType", data.user.userType);
             console.log("Login successful");
