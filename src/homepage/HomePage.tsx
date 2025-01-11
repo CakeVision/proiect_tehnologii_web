@@ -17,7 +17,7 @@ const HomePage: React.FC = () => {
     const [checkedTasks, setCheckedTasks] = useState<Set<string>>(new Set());
     const [userType, setUserType] = useState<string | null>(null);
     const [sidebarVisible, setSidebarVisible] = useState<boolean>(false);
-
+    const [managedUsers, setManagedUsers] = useState<string[]>([]);
     const baseApiURL = "https://proiecttehnologiiweb-production.up.railway.app"
 
     useEffect(() => {
@@ -25,6 +25,39 @@ const HomePage: React.FC = () => {
         if (storedUserType)
             setUserType(storedUserType);
     }, []);
+
+    //This is for managers only
+    useEffect(() => {
+        const fetchManagedUsers = async () => {
+            const refreshToken = localStorage.getItem("refreshToken");
+            const userId = localStorage.getItem("userId");
+            if (userType !== "Manager" || !refreshToken || !userId) return;
+
+            try {
+                const response = await fetch(`${baseApiURL}/users/managed/${userId}`, {
+                    method: "GET",
+                    headers: {
+                        "Content-Type": "application/json",
+                        Authorization: `Bearer ${refreshToken}`,
+                        "Access-Control-Allow-Origin": "*",
+                    },
+                });
+
+                if (!response.ok) {
+                    throw new Error("Failed to fetch managed users.");
+                }
+
+                const data = await response.json();
+                const managedUserIds = data.result.map((user: any) => user.id.toString());
+                console.log("Managed users:", managedUserIds);
+                setManagedUsers(managedUserIds);
+            } catch (err: any) {
+                setError(err.message || "An error occurred while fetching managed users.");
+            }
+        };
+
+        fetchManagedUsers();
+    }, [userType]);
 
     useEffect(() => {
         const fetchTasks = async () => {
@@ -71,14 +104,31 @@ const HomePage: React.FC = () => {
                     const data = await response.json();
                     filteredTasks = data;
                 }
+                else if (storedUserType === "Manager") {
+                    const response = await fetch(baseApiURL + "/tasks/allOwned", {
+                        method: "GET",
+                        headers: {
+                            "Content-Type": "application/json",
+                            Authorization: `Bearer ${refreshToken}`,
+                            "Access-Control-Allow-Origin": "*",
+                        },
+                    });
+
+                    if (!response.ok) {
+                        throw new Error("Failed to fetch tasks.");
+                    }
+
+                    const data = await response.json();
+                    filteredTasks = data;
+                    console.log(filteredTasks);
+                }
                 setTasks(filteredTasks);
             } catch (err: any) {
                 setError(err.message || "An error occurred while fetching tasks.");
             }
         };
-
-        fetchTasks();
-    }, []);
+        if (userType) fetchTasks();
+    }, [userType, managedUsers]);
 
     useEffect(() => {
         const fetchUsers = async () => {
