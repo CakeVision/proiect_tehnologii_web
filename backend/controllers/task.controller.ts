@@ -81,8 +81,8 @@ export class TaskController {
     }
     async assign(req, res) {
         const {
-            taskId ,
-            userId ,
+            idTask ,
+            idUser ,
         } = req.params
         const validParamCount = Object.values(req.params).filter(param => param != null).length;
         if (validParamCount <2) {
@@ -93,14 +93,14 @@ export class TaskController {
         }
 
         //TODO: Refactor into error function
-        if (!taskId && taskId !=1) {
+        if (!idTask && idTask !=1) {
             return res.status(400).json({ "status": "error", "message": "taskId is required to delete a task" })
         }
-        if (!userId && userId != 1) {
+        if (!idUser && idUser != 1) {
             return res.status(400).json({ "status": "error", "message": "userId is required to delete a task" })
         }
-        const user = await User.findByPk(userId)
-        const task = await Task.findByPk(taskId)
+        const user = await User.findByPk(idUser)
+        const task = await Task.findByPk(idTask)
         if (!user) {
             return res.status(400).json({ "status": "error", "message": `user with id: ${userId} not found` })
         }
@@ -113,8 +113,8 @@ export class TaskController {
     }
     async deassign(req, res) {
         const {
-            taskId ,
-            userId ,
+            idTask ,
+            idUser ,
         } = req.params
         const validParamCount = Object.values(req.params).filter(param => param != null).length;
         if (validParamCount <2) {
@@ -124,19 +124,19 @@ export class TaskController {
             });
         }
 
-
-        if (!taskId && taskId != 1) {
+        //TODO: Refactor into error function
+        if (!idTask && idTask !=1) {
             return res.status(400).json({ "status": "error", "message": "taskId is required to delete a task" })
         }
-        if (!userId && userId !=1) {
+        if (!idUser && idUser != 1) {
             return res.status(400).json({ "status": "error", "message": "userId is required to delete a task" })
         }
-        const assignment = await Assignment.findOne({ where: { userId, taskId } })
+        const assignment = await Assignment.findOne({ where: { userId:idUser, taskId:idTask } })
         if (!assignment) {
             return res.status(400).json({ "status": "error", "message": `Assignment with key (${userId},${taskId}) doesnt exist` })
         }
-        const user = await User.findByPk(userId);
-        const task = await Task.findByPk(taskId);
+        const user = await User.findByPk(idUser);
+        const task = await Task.findByPk(idTask);
         if (!user || !task) {
             throw new Error('User or Task not found');
         }
