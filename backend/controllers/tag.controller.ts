@@ -3,7 +3,8 @@ import { Task } from "../models/task.model";
 import { TagLink } from "../models/tag_link.model";
 
 function validateParams(params:object):Array<string>{
-    return Object.values(params).filter(param => param != null || param != undefined);
+    return Object.values(params).filter(param => 
+        param != null);
 }
 
 export class TagController {
@@ -36,7 +37,7 @@ export class TagController {
         }
         const {name = undefined, color=undefined} = req.body
         const tag = Tags.findByPk(id);
-        
+        const validParams = validateParams({name,color})
         }
     }
 }
