@@ -1,10 +1,16 @@
 import { Model, DataTypes, Sequelize, EnumDataType } from 'sequelize';
 
-enum TaskStatus {
+export enum TaskStatus {
     TODO = 'TODO',
     IN_PROGRESS = 'IN_PROGRESS',
     DONE = 'DONE',
     ARCHIVED = 'ARCHIVED'
+}
+
+export enum TaskPriority {
+    LOW ='Low',
+    MEDIUM = 'Medium',
+    HIGH = 'High',
 }
 
 interface TaskAttributes {
@@ -13,8 +19,10 @@ interface TaskAttributes {
     title: string;
     description: string;
     status: TaskStatus;
+    deadline: Date;
+    priority: TaskPriority;
 }
-interface TaskCreationAttributes extends Omit<TaskAttributes, 'id' | 'description' | 'status' | 'createdAt' | 'updatedAt'> {
+interface TaskCreationAttributes extends Omit<TaskAttributes, 'id' | 'description' | 'status' | 'deadline'| 'priority' | 'createdAt' | 'updatedAt'> {
 }
 
 class Task extends Model<TaskAttributes, TaskCreationAttributes> {
@@ -49,6 +57,22 @@ class Task extends Model<TaskAttributes, TaskCreationAttributes> {
                     validate: {
                         isIn: {
                             args: [Object.values(TaskStatus)],
+                            msg: 'Invalid status value'
+                        }
+                    }
+                },
+                deadline: {
+                        type: DataTypes.DATE,
+                        allowNull: true,
+                        defaultValue: new Date('2000-01-01'),
+                },
+                priority: {
+                    type: DataTypes.ENUM(...Object.values(TaskPriority)),
+                    allowNull: false,
+                    defaultValue: TaskStatus.TODO,
+                    validate: {
+                        isIn: {
+                            args: [Object.values(TaskPriority)],
                             msg: 'Invalid status value'
                         }
                     }

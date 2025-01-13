@@ -14,20 +14,27 @@ export class TaskController {
         const {
             title ,
             idCreator,
-            description,
-            status,
-        } = req.params;
 
-        const params = buildParamDict(req.params)
-        const empty = Object.values(params).length < 2
-        if (empty) {
+        } = req.params;
+        const {
+            description = undefined,
+            status= undefined,
+            deadline= undefined,
+            priority= undefined,
+        } = req.body
+        
+        const validParamCount = Object.values(req.params).filter(param => param != null).length;
+        if (validParamCount < 2) {
           return res.status(400).json({
                 "status": "Missing Non-optional Params",
                 "message": `Provide at least one of ${Object.keys({ title, idCreator }).join(', ')}`,
             });
         }
         const task = await Task.create({ idCreator, title });
-        task.update({description, status})
+        const validParams = Object.fromEntries(Object.entries(req.body).filter(([_, value]) => value !== undefined));
+        if(Object.keys(validParams).length !=0){
+            task.update({description, status, deadline, priority})
+        }
         return res.status(200).json({
             "message": `Creation Succesful`,
             "task": task
@@ -37,12 +44,14 @@ export class TaskController {
     async alter(req, res) {
         const {
             idTask,
-            title ,
-            idCreator,
-            description,
-            status,
         } = req.params;
-
+         const {
+            title =undefined,
+            description = undefined,
+            status= undefined,
+            deadline= undefined,
+            priority= undefined,
+        } = req.body
         const params = buildParamDict(req.params)
         const validParamCount = Object.values(params).filter(param => param != null).length;
         if (validParamCount == 0) {
@@ -51,13 +60,8 @@ export class TaskController {
                 "message": `Provide at least one of ${Object.keys({ title, idCreator }).join(', ')}`,
             });
         }
-        if(validParamCount == 1){
-            return res.status(400).json({
-                "status": "Missing Params",
-                "message": `Provide at least one of ${Object.keys({ title, idCreator }).join(', ')}`,
-            });
-        }
-
+        
+        const validBodyParams = Object.fromEntries(Object.entries(req.body).filter(([_, value]) => value !== undefined));
         const task = await Task.findByPk(idTask)
         if (!task) {
             res.status(400).json({
@@ -65,7 +69,7 @@ export class TaskController {
                 "message": `No task with provided id`,
             });
         }
-        task?.update({ title, idCreator, description, status })
+        task?.update({ title, description, status, priority, deadline })
         res.status(200).json({
             "message": `Alter Succesful`,
         });
