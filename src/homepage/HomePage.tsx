@@ -3,7 +3,7 @@ import { Task } from "../components/types";
 import ContentHeader from "../components/Tasks/TaskContentHeader";
 import { TaskList } from "@/components/Tasks/TaskList";
 import Sidebar from "@/components/sidebar/Sidebar";
-
+import TaskModal from "@/homepage/TaskModal";
 
 const HomePage: React.FC = () => {
     const [tasks, setTasks] = useState<Task[]>([]);
@@ -18,7 +18,11 @@ const HomePage: React.FC = () => {
     const [userType, setUserType] = useState<string | null>(null);
     const [sidebarVisible, setSidebarVisible] = useState<boolean>(false);
     const [managedUsers, setManagedUsers] = useState<string[]>([]);
-    const baseApiURL = "https://proiecttehnologiiweb-production.up.railway.app"
+    // New state for TaskModal
+    const [selectedTask, setSelectedTask] = useState<Task | null>(null);
+    const [isModalOpen, setIsModalOpen] = useState(false);
+    
+    const baseApiURL = "https://proiecttehnologiiweb-production.up.railway.app";
 
     useEffect(() => {
         const storedUserType = localStorage.getItem("userType");
@@ -173,6 +177,74 @@ const HomePage: React.FC = () => {
         fetchUsers();
     }, []);
 
+    const handleTaskClick = (task: Task) => {
+        setSelectedTask(task);
+        setIsModalOpen(true);
+    };
+
+    const handleModalClose = () => {
+        setSelectedTask(null);
+        setIsModalOpen(false);
+    };
+
+    const handleTaskSave = async (updatedTask: Task) => {
+        const refreshToken = localStorage.getItem("refreshToken");
+        if (!refreshToken) {
+            setError("User is not logged in.");
+            return;
+        }
+
+        try {
+            const response = await fetch(`${baseApiURL}/tasks/alter`, {
+                method: "PUT",
+                headers: {
+                    "Content-Type": "application/json",
+                    Authorization: `Bearer ${refreshToken}`,
+                    "Access-Control-Allow-Origin": "*",
+                },
+                body: JSON.stringify(updatedTask),
+            });
+
+            if (!response.ok) {
+                throw new Error("Failed to update task");
+            }
+
+            setTasks(tasks.map(task => 
+                task.id === updatedTask.id ? updatedTask : task
+            ));
+            setIsModalOpen(false);
+        } catch (err: any) {
+            setError(err.message || "An error occurred while updating the task.");
+        }
+    };
+
+    const handleTaskDelete = async (task: Task) => {
+        const refreshToken = localStorage.getItem("refreshToken");
+        if (!refreshToken) {
+            setError("User is not logged in.");
+            return;
+        }
+
+        try {
+            const response = await fetch(`${baseApiURL}/tasks/${task.id}`, {
+                method: "DELETE",
+                headers: {
+                    Authorization: `Bearer ${refreshToken}`,
+                    "Access-Control-Allow-Origin": "*",
+                },
+            });
+
+            if (!response.ok) {
+                throw new Error("Failed to delete task");
+            }
+
+            setTasks(tasks.filter(t => t.id !== task.id));
+            setIsModalOpen(false);
+        } catch (err: any) {
+            setError(err.message || "An error occurred while deleting the task.");
+        }
+    };
+
     const handleCheckboxChange = (taskId: string) => {
         setCheckedTasks((prevCheckedTasks) => {
             const updatedCheckedTasks = new Set(prevCheckedTasks);
@@ -214,12 +286,21 @@ const HomePage: React.FC = () => {
                     totalTasks={tasks.length}
                     userTasks={tasksForSelectedUser}
                     activeTasks={activeTasksCount}
-                    onBurgerClick={() => setSidebarVisible(!sidebarVisible)} />
+                    onBurgerClick={() => setSidebarVisible(!sidebarVisible)}
+                />
                 <TaskList
                     tasks={filteredTasks}
                     viewType={viewType}
                     error={error}
                     onToggleComplete={handleCheckboxChange}
+                    onTaskClick={handleTaskClick}
+                />
+                <TaskModal
+                    isOpen={isModalOpen}
+                    onClose={handleModalClose}
+                    task={selectedTask}
+                    onSave={handleTaskSave}
+                    onDelete={handleTaskDelete}
                 />
             </div>
         </div>
