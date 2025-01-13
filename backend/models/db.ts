@@ -219,65 +219,65 @@ async function syncDatabase() {
       // force: true  // uncomment to drop and recreate tables
       // alter: true  // uncomment to alter existing tables
     });
-    const user1 = await User.create({
-      name: 'John Doe',
-      email: 'john@example.com',
-      password: 'password123',
-      userType: UserType.USER,
-      lastLogin: new Date()
-    });
-    await generateTokens(user1);
-
-    const user2 = await User.create({
-      name: 'Jane Smith',
-      email: 'jane@example.com',
-      password: 'password456',
-      userType: UserType.MANAGER,
-      lastLogin: new Date()
-    });
-
-    await generateTokens(user2);
-
-    const user3 = await User.create({
-      name: 'Bob Wilson',
-      email: 'bob@example.com',
-      password: 'password789',
-      userType: UserType.ADMIN,
-      lastLogin: new Date()
-    });
-
-    await generateTokens(user3);
-    // Create tasks
-    const task1 = await Task.create({
-      title: 'Complete Project A',
-      idCreator: user1.getDataValue('id')
-    });
-
-    const task2 = await Task.create({
-      title: 'Review Documentation',
-      idCreator: user2.getDataValue('id')
-    });
-
-    const task3 = await Task.create({
-      title: 'Deploy Application',
-      idCreator: user3.getDataValue('id')
-    });
-    const assignment1 = await Assignment.create({
-      userId: user1.getDataValue('id'),
-      taskId: task2.getDataValue('id')  // John is assigned to Jane's task
-    });
-
-    const assignment2 = await Assignment.create({
-      userId: user2.getDataValue('id'),
-      taskId: task3.getDataValue('id')  // Jane is assigned to Bob's task
-    });
-
-    const assignment3 = await Assignment.create({
-      userId: user3.getDataValue('id'),
-      taskId: task1.getDataValue('id')  // Bob is assigned to John's task
-    });
-
-    await create_mock_data();
+//    const user1 = await User.create({
+//      name: 'John Doe',
+//      email: 'john@example.com',
+//      password: 'password123',
+//      userType: UserType.USER,
+//      lastLogin: new Date()
+//    });
+//    await generateTokens(user1);
+//
+//    const user2 = await User.create({
+//      name: 'Jane Smith',
+//      email: 'jane@example.com',
+//      password: 'password456',
+//      userType: UserType.MANAGER,
+//      lastLogin: new Date()
+//    });
+//
+//    await generateTokens(user2);
+//
+//    const user3 = await User.create({
+//      name: 'Bob Wilson',
+//      email: 'bob@example.com',
+//      password: 'password789',
+//      userType: UserType.ADMIN,
+//      lastLogin: new Date()
+//    });
+//
+//    await generateTokens(user3);
+//    // Create tasks
+//    const task1 = await Task.create({
+//      title: 'Complete Project A',
+//      idCreator: user1.getDataValue('id')
+//    });
+//
+//    const task2 = await Task.create({
+//      title: 'Review Documentation',
+//      idCreator: user2.getDataValue('id')
+//    });
+//
+//    const task3 = await Task.create({
+//      title: 'Deploy Application',
+//      idCreator: user3.getDataValue('id')
+//    });
+//    const assignment1 = await Assignment.create({
+//      userId: user1.getDataValue('id'),
+//      taskId: task2.getDataValue('id')  // John is assigned to Jane's task
+//    });
+//
+//    const assignment2 = await Assignment.create({
+//      userId: user2.getDataValue('id'),
+//      taskId: task3.getDataValue('id')  // Jane is assigned to Bob's task
+//    });
+//
+//    const assignment3 = await Assignment.create({
+//      userId: user3.getDataValue('id'),
+//      taskId: task1.getDataValue('id')  // Bob is assigned to John's task
+//    });
+//
+//    await create_mock_data();
     console.log('Database synchronized successfully.');
   } catch (error) {
     console.error('Error synchronizing database:', error);
