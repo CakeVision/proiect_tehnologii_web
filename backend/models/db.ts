@@ -215,7 +215,7 @@ async function syncDatabase() {
       console.error('Unable to connect to the database:', error);
     }
     await sequelize.sync({
-      force: true
+      force: false
       // force: true  // uncomment to drop and recreate tables
       // alter: true  // uncomment to alter existing tables
     });
