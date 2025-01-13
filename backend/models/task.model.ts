@@ -52,7 +52,7 @@ class Task extends Model<TaskAttributes, TaskCreationAttributes> {
                 },
                 status: {
                     type: DataTypes.ENUM(...Object.values(TaskStatus)),
-                    allowNull: false,
+                    allowNull: true,
                     defaultValue: TaskStatus.TODO,
                     validate: {
                         isIn: {
