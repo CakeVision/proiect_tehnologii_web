@@ -4,6 +4,7 @@ import ContentHeader from "../components/Tasks/TaskContentHeader";
 import { TaskList } from "@/components/Tasks/TaskList";
 import Sidebar from "@/components/sidebar/Sidebar";
 import TaskModal from "@/homepage/TaskModal";
+import debug from "debug";
 
 const HomePage: React.FC = () => {
     const [tasks, setTasks] = useState<Task[]>([]);
@@ -26,6 +27,7 @@ const HomePage: React.FC = () => {
 
     useEffect(() => {
         const storedUserType = localStorage.getItem("userType");
+        debug.log(storedUserType);
         if (storedUserType)
             setUserType(storedUserType);
     }, []);
@@ -196,8 +198,8 @@ const HomePage: React.FC = () => {
         }
 
         try {
-            const response = await fetch(`${baseApiURL}/tasks/alter`, {
-                method: "PUT",
+            const response = await fetch(`${baseApiURL}/tasks/alter/${updatedTask.id}`, {
+                method: "PATCH",
                 headers: {
                     "Content-Type": "application/json",
                     Authorization: `Bearer ${refreshToken}`,

@@ -1,3 +1,4 @@
+import debug from 'debug';
 import React, { useState, useEffect } from 'react';
 
 interface Task {
@@ -38,10 +39,14 @@ const TaskModal = ({ isOpen, onClose, task, onSave, onDelete }: TaskModalProps) 
         }
     }, []);
 
-    const statuses = ['Not Started', 'In Progress', 'Completed'];
+    const statuses = ['TODO', 'IN_PROGRESS', 'DONE', 'ARCHIVED'];
     const priorities = ['Low', 'Medium', 'High'];
     const isDeleteEnabled = deleteConfirmTitle === task.title;
+    
+    // Updated permission checks
     const canEdit = userType === 'Administrator' || userType === 'Manager';
+    const canChangeStatus = userType === 'Executor' || userType === 'Administrator' || userType === 'Manager'
+    debug.log("canChangeStatus: " + canChangeStatus);
 
     const renderField = (label: string, content: React.ReactNode) => (
         <>
@@ -91,7 +96,7 @@ const TaskModal = ({ isOpen, onClose, task, onSave, onDelete }: TaskModalProps) 
                         )}
 
                         {renderField("Status",
-                            canEdit ? (
+                            canChangeStatus ? (
                                 <select
                                     value={editedStatus}
                                     onChange={(e) => setEditedStatus(e.target.value)}
@@ -188,16 +193,16 @@ const TaskModal = ({ isOpen, onClose, task, onSave, onDelete }: TaskModalProps) 
                     >
                         Cancel
                     </button>
-                    {canEdit && (
+                    {(canEdit || canChangeStatus) && (
                         <button
                             onClick={() => {
                                 const updatedTask = {
                                     ...task,
-                                    title: editedTitle,
-                                    description: editedDescription,
-                                    status: editedStatus,
-                                    priority: editedPriority,
-                                    deadline: editedDeadline
+                                    title: canEdit ? editedTitle : task.title,
+                                    description: canEdit ? editedDescription : task.description,
+                                    status: canChangeStatus ? editedStatus : task.status,
+                                    priority: canEdit ? editedPriority : task.priority,
+                                    deadline: canEdit ? editedDeadline : task.deadline
                                 };
                                 onSave(updatedTask);
                             }}
