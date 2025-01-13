@@ -81,14 +81,22 @@ export class TaskController {
     }
     async assign(req, res) {
         const {
-            taskId = undefined,
-            userId = undefined,
+            taskId ,
+            userId ,
         } = req.params
+        const validParamCount = Object.values(req.params).filter(param => param != null).length;
+        if (validParamCount <2) {
+            return res.status(400).json({
+                "status": "Missing Params",
+                "message": `Provide at least one of ${Object.keys({ title, idCreator }).join(', ')}`,
+            });
+        }
+
         //TODO: Refactor into error function
-        if (!taskId) {
+        if (!taskId && taskId !=1) {
             return res.status(400).json({ "status": "error", "message": "taskId is required to delete a task" })
         }
-        if (!userId) {
+        if (!userId && userId != 1) {
             return res.status(400).json({ "status": "error", "message": "userId is required to delete a task" })
         }
         const user = await User.findByPk(userId)
@@ -105,13 +113,22 @@ export class TaskController {
     }
     async deassign(req, res) {
         const {
-            taskId = undefined,
-            userId = undefined,
+            taskId ,
+            userId ,
         } = req.params
-        if (!taskId) {
+        const validParamCount = Object.values(req.params).filter(param => param != null).length;
+        if (validParamCount <2) {
+            return res.status(400).json({
+                "status": "Missing Params",
+                "message": `Provide at least one of ${Object.keys({ title, idCreator }).join(', ')}`,
+            });
+        }
+
+
+        if (!taskId && taskId != 1) {
             return res.status(400).json({ "status": "error", "message": "taskId is required to delete a task" })
         }
-        if (!userId) {
+        if (!userId && userId !=1) {
             return res.status(400).json({ "status": "error", "message": "userId is required to delete a task" })
         }
         const assignment = await Assignment.findOne({ where: { userId, taskId } })
