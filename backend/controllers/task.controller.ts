@@ -2,8 +2,6 @@ import { Task } from "../models/task.model";
 import { User } from "../models/user.model";
 import { Assignment } from "../models/assignment.model";
 import jwt from 'jsonwebtoken'
-import sequelize from '../models/db'
-import { QueryTypes } from "sequelize";
 
 const buildParamDict = (fields: Record<string, any>) =>
     Object.entries(fields)
@@ -150,13 +148,8 @@ export class TaskController {
         return res.status(200).json({ "status": "success", "message": "Assignment deleted succesfully" })
     }
     async getAll(req, res) {
-        const tasks = await sequelize.query(
-            "Select * from Tasks",{
-
-            type: QueryTypes.SELECT,
-            }
-        )
-               res.status(200).json(tasks)
+        const tasks = await  Task.findAll();
+        res.status(200).json(tasks)
     }
     async getOne(req, res) {
         const tasks = await Task.findByPk(req.params.id)
