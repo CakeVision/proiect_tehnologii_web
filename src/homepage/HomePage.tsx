@@ -232,7 +232,7 @@ const HomePage: React.FC = () => {
         }
 
         try {
-            const response = await fetch(`${baseApiURL}/tasks/${task.id}`, {
+            const response = await fetch(`${baseApiURL}/tasks/delete/${task.id}`, {
                 method: "DELETE",
                 headers: {
                     Authorization: `Bearer ${refreshToken}`,
