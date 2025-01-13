@@ -72,11 +72,11 @@ export class TaskController {
     }
     async del(req, res) {
         const {
-            id = undefined
+            idTask = undefined
         } = req.params
 
-        if (!id) res.status(400).json({ "status": "error", "message": "id is required to delete a task" })
-        await Task.destroy({ where: { id: id } })
+        if (!idTask) res.status(400).json({ "status": "error", "message": "id is required to delete a task" })
+        await Task.destroy({ where: { id: idTask } })
         res.status(200).json({ "status": "completed", "message": "task succesfully deleted" })
     }
     async assign(req, res) {
