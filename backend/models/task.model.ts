@@ -68,7 +68,7 @@ class Task extends Model<TaskAttributes, TaskCreationAttributes> {
                 },
                 priority: {
                     type: DataTypes.ENUM(...Object.values(TaskPriority)),
-                    allowNull: false,
+                    allowNull: true,
                     defaultValue: TaskPriority.LOW,
                     validate: {
                         isIn: {
