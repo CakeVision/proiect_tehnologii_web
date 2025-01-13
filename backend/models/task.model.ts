@@ -64,12 +64,12 @@ class Task extends Model<TaskAttributes, TaskCreationAttributes> {
                 deadline: {
                         type: DataTypes.DATE,
                         allowNull: true,
-                        defaultValue: new Date('2000-01-01'),
+                        defaultValue: DataTypes.NOW,
                 },
                 priority: {
                     type: DataTypes.ENUM(...Object.values(TaskPriority)),
                     allowNull: false,
-                    defaultValue: TaskStatus.TODO,
+                    defaultValue: TaskPriority.LOW,
                     validate: {
                         isIn: {
                             args: [Object.values(TaskPriority)],
