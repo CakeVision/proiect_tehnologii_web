@@ -4,6 +4,8 @@ import ContentHeader from "../components/Tasks/TaskContentHeader";
 import { TaskList } from "@/components/Tasks/TaskList";
 import Sidebar from "@/components/sidebar/Sidebar";
 import TaskModal from "@/homepage/TaskModal";
+import CreateTaskModal from "@/homepage/CreateTaskModal";
+import { Console } from "console";
 
 const HomePage: React.FC = () => {
     const [tasks, setTasks] = useState<Task[]>([]);
@@ -21,6 +23,9 @@ const HomePage: React.FC = () => {
     // New state for TaskModal
     const [selectedTask, setSelectedTask] = useState<Task | null>(null);
     const [isModalOpen, setIsModalOpen] = useState(false);
+
+    const [isCreateModalOpen, setIsCreateModalOpen] = useState(false);
+
     
     const baseApiURL = "https://proiecttehnologiiweb-production.up.railway.app";
 
@@ -246,6 +251,79 @@ const HomePage: React.FC = () => {
         }
     };
 
+    interface TaskResponse {
+        task: Task;
+        success: boolean;
+        message?: string;
+    }
+    
+    interface TaskResponseStore {
+        [taskId: string]: TaskResponse;
+    }
+    
+    const taskResponses: TaskResponseStore = {};
+    
+    const handleCreateTask = async (newTask: Omit<Task, 'id'>) => {
+        const refreshToken = localStorage.getItem("refreshToken");
+        const currentUserId = localStorage.getItem("userId")
+        if (!refreshToken) {
+            setError("User is not logged in.");
+            return;
+        }
+    
+        try {
+            const response = await fetch(`${baseApiURL}/tasks/create/${currentUserId}/${newTask.title}`, {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                    Authorization: `Bearer ${refreshToken}`,
+                    "Access-Control-Allow-Origin": "*",
+                },
+                body: JSON.stringify(newTask),
+            });
+    
+            if (!response.ok) {
+                throw new Error("Failed to create task");
+            }
+    
+            const createdTask = await response.json();
+            
+            // Store the response in our taskResponses object
+            const taskResponse: TaskResponse = {
+                task: createdTask,
+                success: true
+            };
+
+            console.log(createdTask)
+            const createdTaskId = createdTask['task']['id']
+            
+            console.log("id of the created task is: " + createdTaskId + " Assigned executor id is: " +  newTask.idExecutor)
+
+            const otherResponse = await fetch(`${baseApiURL}/tasks/assign/${createdTaskId}/${newTask.idExecutor}`, {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                    Authorization: `Bearer ${refreshToken}`,
+                    "Access-Control-Allow-Origin": "*",
+                },
+            });
+
+
+            // // Continue with existing functionality
+            // setTasks([...tasks, createdTask]);
+            // setIsCreateModalOpen(false);
+            return taskResponse;
+        } catch (err: any) {
+            const errorResponse: TaskResponse = {
+                task: newTask as Task, // Type assertion since we don't have an id
+                success: false,
+                message: err.message || "An error occurred while creating the task."
+            };
+    
+            return errorResponse;
+        }
+    };
+
     const handleCheckboxChange = (taskId: string) => {
         setCheckedTasks((prevCheckedTasks) => {
             const updatedCheckedTasks = new Set(prevCheckedTasks);
@@ -288,6 +366,7 @@ const HomePage: React.FC = () => {
                     userTasks={tasksForSelectedUser}
                     activeTasks={activeTasksCount}
                     onBurgerClick={() => setSidebarVisible(!sidebarVisible)}
+                    onCreateTask={() => setIsCreateModalOpen(true)}
                 />
                 <TaskList
                     tasks={filteredTasks}
@@ -302,6 +381,12 @@ const HomePage: React.FC = () => {
                     task={selectedTask}
                     onSave={handleTaskSave}
                     onDelete={handleTaskDelete}
+                />
+                <CreateTaskModal
+                    isOpen={isCreateModalOpen}
+                    onClose={() => setIsCreateModalOpen(false)}
+                    onSave={handleCreateTask}
+                    creators={users}
                 />
             </div>
         </div>
