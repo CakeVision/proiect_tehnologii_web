@@ -1,4 +1,3 @@
-import debug from 'debug';
 import React, { useState, useEffect } from 'react';
 
 interface Task {
@@ -46,7 +45,7 @@ const TaskModal = ({ isOpen, onClose, task, onSave, onDelete }: TaskModalProps) 
     // Updated permission checks
     const canEdit = userType === 'Administrator' || userType === 'Manager';
     const canChangeStatus = userType === 'Executor' || userType === 'Administrator' || userType === 'Manager'
-    debug.log("canChangeStatus: " + canChangeStatus);
+
 
     const renderField = (label: string, content: React.ReactNode) => (
         <>
