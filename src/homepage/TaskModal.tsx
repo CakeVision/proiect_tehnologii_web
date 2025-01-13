@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 
 interface Task {
     id: string;
@@ -22,6 +22,7 @@ interface TaskModalProps {
 const TaskModal = ({ isOpen, onClose, task, onSave, onDelete }: TaskModalProps) => {
     if (!isOpen || !task) return null;
 
+    const [userType, setUserType] = useState<string | null>(null);
     const [editedTitle, setEditedTitle] = useState(task.title);
     const [editedDescription, setEditedDescription] = useState(task.description);
     const [editedStatus, setEditedStatus] = useState(task.status);
@@ -30,10 +31,24 @@ const TaskModal = ({ isOpen, onClose, task, onSave, onDelete }: TaskModalProps) 
     const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
     const [deleteConfirmTitle, setDeleteConfirmTitle] = useState('');
 
+    useEffect(() => {
+        const storedUserType = localStorage.getItem("userType");
+        if (storedUserType) {
+            setUserType(storedUserType);
+        }
+    }, []);
+
     const statuses = ['Not Started', 'In Progress', 'Completed'];
     const priorities = ['Low', 'Medium', 'High'];
-
     const isDeleteEnabled = deleteConfirmTitle === task.title;
+    const canEdit = userType === 'Administrator' || userType === 'Manager';
+
+    const renderField = (label: string, content: React.ReactNode) => (
+        <>
+            <div className="font-semibold text-gray-200">{label}:</div>
+            <div className="text-gray-300">{content}</div>
+        </>
+    );
 
     return (
         <div className="fixed inset-0 flex items-center justify-center z-50">
@@ -49,71 +64,85 @@ const TaskModal = ({ isOpen, onClose, task, onSave, onDelete }: TaskModalProps) 
                 </div>
                 <div className="space-y-4">
                     <div className="grid grid-cols-2 gap-2">
-                        <div className="font-semibold text-gray-200">Title:</div>
-                        <div className="text-gray-300">
-                            <input
-                                type="text"
-                                value={editedTitle}
-                                onChange={(e) => setEditedTitle(e.target.value)}
-                                className="w-full border border-gray-300 rounded-md px-2 py-1 bg-[#333333] focus:outline-none focus:ring-2 focus:ring-blue-500"
-                            />
-                        </div>
+                        {renderField("Title", 
+                            canEdit ? (
+                                <input
+                                    type="text"
+                                    value={editedTitle}
+                                    onChange={(e) => setEditedTitle(e.target.value)}
+                                    className="w-full border border-gray-300 rounded-md px-2 py-1 bg-[#333333] focus:outline-none focus:ring-2 focus:ring-blue-500"
+                                />
+                            ) : (
+                                <span className="px-2 py-1">{editedTitle}</span>
+                            )
+                        )}
 
-                        <div className="font-semibold text-gray-200">Description:</div>
-                        <div className="text-gray-300">
-                            <textarea
-                                value={editedDescription}
-                                onChange={(e) => setEditedDescription(e.target.value)}
-                                className="w-full border border-gray-300 rounded-md px-2 py-1 bg-[#333333] focus:outline-none focus:ring-2 focus:ring-blue-500"
-                                rows={3}
-                            />
-                        </div>
+                        {renderField("Description",
+                            canEdit ? (
+                                <textarea
+                                    value={editedDescription}
+                                    onChange={(e) => setEditedDescription(e.target.value)}
+                                    className="w-full border border-gray-300 rounded-md px-2 py-1 bg-[#333333] focus:outline-none focus:ring-2 focus:ring-blue-500"
+                                    rows={3}
+                                />
+                            ) : (
+                                <span className="px-2 py-1">{editedDescription}</span>
+                            )
+                        )}
 
-                        <div className="font-semibold text-gray-200">Status:</div>
-                        <div className="text-gray-300">
-                            <select
-                                value={editedStatus}
-                                onChange={(e) => setEditedStatus(e.target.value)}
-                                className="w-full border border-gray-300 rounded-md px-2 py-1 bg-[#333333] focus:outline-none focus:ring-2 focus:ring-blue-500"
-                            >
-                                {statuses.map(status => (
-                                    <option key={status} value={status}>
-                                        {status}
-                                    </option>
-                                ))}
-                            </select>
-                        </div>
+                        {renderField("Status",
+                            canEdit ? (
+                                <select
+                                    value={editedStatus}
+                                    onChange={(e) => setEditedStatus(e.target.value)}
+                                    className="w-full border border-gray-300 rounded-md px-2 py-1 bg-[#333333] focus:outline-none focus:ring-2 focus:ring-blue-500"
+                                >
+                                    {statuses.map(status => (
+                                        <option key={status} value={status}>
+                                            {status}
+                                        </option>
+                                    ))}
+                                </select>
+                            ) : (
+                                <span className="px-2 py-1">{editedStatus}</span>
+                            )
+                        )}
 
-                        <div className="font-semibold text-gray-200">Priority:</div>
-                        <div className="text-gray-300">
-                            <select
-                                value={editedPriority}
-                                onChange={(e) => setEditedPriority(e.target.value)}
-                                className="w-full border border-gray-300 rounded-md px-2 py-1 bg-[#333333] focus:outline-none focus:ring-2 focus:ring-blue-500"
-                            >
-                                {priorities.map(priority => (
-                                    <option key={priority} value={priority}>
-                                        {priority}
-                                    </option>
-                                ))}
-                            </select>
-                        </div>
+                        {renderField("Priority",
+                            canEdit ? (
+                                <select
+                                    value={editedPriority}
+                                    onChange={(e) => setEditedPriority(e.target.value)}
+                                    className="w-full border border-gray-300 rounded-md px-2 py-1 bg-[#333333] focus:outline-none focus:ring-2 focus:ring-blue-500"
+                                >
+                                    {priorities.map(priority => (
+                                        <option key={priority} value={priority}>
+                                            {priority}
+                                        </option>
+                                    ))}
+                                </select>
+                            ) : (
+                                <span className="px-2 py-1">{editedPriority}</span>
+                            )
+                        )}
 
-                        <div className="font-semibold text-gray-200">Deadline:</div>
-                        <div className="text-gray-300">
-                            <input
-                                type="datetime-local"
-                                value={editedDeadline}
-                                onChange={(e) => setEditedDeadline(e.target.value)}
-                                className="w-full border border-gray-300 rounded-md px-2 py-1 bg-[#333333] focus:outline-none focus:ring-2 focus:ring-blue-500"
-                            />
-                        </div>
+                        {renderField("Deadline",
+                            canEdit ? (
+                                <input
+                                    type="datetime-local"
+                                    value={editedDeadline}
+                                    onChange={(e) => setEditedDeadline(e.target.value)}
+                                    className="w-full border border-gray-300 rounded-md px-2 py-1 bg-[#333333] focus:outline-none focus:ring-2 focus:ring-blue-500"
+                                />
+                            ) : (
+                                <span className="px-2 py-1">{editedDeadline}</span>
+                            )
+                        )}
 
-                        <div className="font-semibold text-gray-200">ID:</div>
-                        <div className="text-gray-300">{task.id}</div>
+                        {renderField("ID", <span className="px-2 py-1">{task.id}</span>)}
                     </div>
 
-                    {showDeleteConfirm && (
+                    {showDeleteConfirm && canEdit && (
                         <div className="mt-4 p-4 bg-[#232323] rounded-md border border-gray-300">
                             <p className="text-sm text-red-600 mb-2">
                                 To delete this task, please type its title to confirm:
@@ -133,10 +162,11 @@ const TaskModal = ({ isOpen, onClose, task, onSave, onDelete }: TaskModalProps) 
                                     }
                                 }}
                                 disabled={!isDeleteEnabled}
-                                className={`w-full px-4 py-2 rounded-md text-white transition-colors ${isDeleteEnabled
-                                    ? 'bg-red-500 hover:bg-red-600'
-                                    : 'bg-red-300 cursor-not-allowed'
-                                    }`}
+                                className={`w-full px-4 py-2 rounded-md text-white transition-colors ${
+                                    isDeleteEnabled
+                                        ? 'bg-red-500 hover:bg-red-600'
+                                        : 'bg-red-300 cursor-not-allowed'
+                                }`}
                             >
                                 Delete Task
                             </button>
@@ -144,7 +174,7 @@ const TaskModal = ({ isOpen, onClose, task, onSave, onDelete }: TaskModalProps) 
                     )}
                 </div>
                 <div className="mt-6 flex justify-end space-x-2">
-                    {!showDeleteConfirm && (
+                    {!showDeleteConfirm && canEdit && (
                         <button
                             onClick={() => setShowDeleteConfirm(true)}
                             className="px-4 py-2 bg-red-500 text-white rounded-md hover:bg-red-600 transition-colors"
@@ -158,22 +188,24 @@ const TaskModal = ({ isOpen, onClose, task, onSave, onDelete }: TaskModalProps) 
                     >
                         Cancel
                     </button>
-                    <button
-                        onClick={() => {
-                            const updatedTask = {
-                                ...task,
-                                title: editedTitle,
-                                description: editedDescription,
-                                status: editedStatus,
-                                priority: editedPriority,
-                                deadline: editedDeadline
-                            };
-                            onSave(updatedTask);
-                        }}
-                        className="px-4 py-2 bg-blue-500 text-white rounded-md hover:bg-blue-600 transition-colors"
-                    >
-                        Save
-                    </button>
+                    {canEdit && (
+                        <button
+                            onClick={() => {
+                                const updatedTask = {
+                                    ...task,
+                                    title: editedTitle,
+                                    description: editedDescription,
+                                    status: editedStatus,
+                                    priority: editedPriority,
+                                    deadline: editedDeadline
+                                };
+                                onSave(updatedTask);
+                            }}
+                            className="px-4 py-2 bg-blue-500 text-white rounded-md hover:bg-blue-600 transition-colors"
+                        >
+                            Save
+                        </button>
+                    )}
                 </div>
             </div>
         </div>

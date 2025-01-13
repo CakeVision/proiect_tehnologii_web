@@ -67,6 +67,7 @@ const HomePage: React.FC = () => {
         const fetchTasks = async () => {
             const refreshToken = localStorage.getItem("refreshToken");
             const storedUserType = localStorage.getItem("userType");
+            const userId = localStorage.getItem("userId");
             if (!refreshToken) {
                 setError("User is not logged in.");
                 return;
@@ -92,7 +93,7 @@ const HomePage: React.FC = () => {
                     filteredTasks = data;
                 }
                 else if (storedUserType === "Executor") {
-                    const response = await fetch(baseApiURL + "/tasks/allOwned", {
+                    const response = await fetch(baseApiURL + `/tasks/allOwned/${userId}`, {
                         method: "GET",
                         headers: {
                             "Content-Type": "application/json",
@@ -109,7 +110,7 @@ const HomePage: React.FC = () => {
                     filteredTasks = data;
                 }
                 else if (storedUserType === "Manager") {
-                    const response = await fetch(baseApiURL + "/tasks/allOwned", {
+                    const response = await fetch(baseApiURL +  `/tasks/allOwned/${userId}`, {
                         method: "GET",
                         headers: {
                             "Content-Type": "application/json",
