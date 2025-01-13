@@ -2,6 +2,7 @@ import { Task } from "../models/task.model";
 import { User } from "../models/user.model";
 import { Assignment } from "../models/assignment.model";
 import jwt from 'jsonwebtoken'
+
 const buildParamDict = (fields: Record<string, any>) =>
     Object.entries(fields)
         .reduce((clause, [key, value]) =>
@@ -11,21 +12,23 @@ const buildParamDict = (fields: Record<string, any>) =>
 export class TaskController {
     async create(req, res) {
         const {
-            title = undefined,
-            idCreator = undefined,
-        } = req.body;
+            title ,
+            idCreator,
+            description,
+            status,
+        } = req.params;
 
-        const params = buildParamDict({ title, idCreator })
+        const params = buildParamDict(req.params)
         const empty = Object.values(params).length < 2
         if (empty) {
-            res.status(400).json({
-                "status": "Missing Params",
+          return res.status(400).json({
+                "status": "Missing Non-optional Params",
                 "message": `Provide at least one of ${Object.keys({ title, idCreator }).join(', ')}`,
             });
-            return;
         }
         const task = await Task.create({ idCreator, title });
-        res.status(200).json({
+        task.update({description, status})
+        return res.status(200).json({
             "message": `Creation Succesful`,
             "task": task
         });
@@ -33,32 +36,36 @@ export class TaskController {
     }
     async alter(req, res) {
         const {
-            taskId = undefined,
-            title = undefined,
-            idCreator = undefined,
-        } = req.body;
+            idTask,
+            title ,
+            idCreator,
+            description,
+            status,
+        } = req.params;
 
-        const params = buildParamDict({ title, idCreator })
-        const empty = Object.keys(params).length === 0
-        if (empty) {
-            res.status(400).json({
+        const params = buildParamDict(req.params)
+        const validParamCount = Object.values(params).filter(param => param != null).length;
+        if (validParamCount == 0) {
+            return res.status(400).json({
                 "status": "Missing Params",
                 "message": `Provide at least one of ${Object.keys({ title, idCreator }).join(', ')}`,
             });
-            return;
+        }
+        if(validParamCount == 1){
+            return res.status(400).json({
+                "status": "Missing Params",
+                "message": `Provide at least one of ${Object.keys({ title, idCreator }).join(', ')}`,
+            });
         }
 
-        const task = Task.findByPk(taskId)
+        const task = await Task.findByPk(idTask)
         if (!task) {
             res.status(400).json({
                 "status": "Task not found",
                 "message": `No task with provided id`,
             });
         }
-        await Task.update(
-            { title, idCreator },
-            { where: { id: taskId } }
-        )
+        task?.update({ title, idCreator, description, status })
         res.status(200).json({
             "message": `Alter Succesful`,
         });
@@ -66,7 +73,7 @@ export class TaskController {
     async del(req, res) {
         const {
             id = undefined
-        } = req.body
+        } = req.params
 
         if (!id) res.status(400).json({ "status": "error", "message": "id is required to delete a task" })
         await Task.destroy({ where: { id: id } })
@@ -76,7 +83,7 @@ export class TaskController {
         const {
             taskId = undefined,
             userId = undefined,
-        } = req.body
+        } = req.params
         //TODO: Refactor into error function
         if (!taskId) {
             return res.status(400).json({ "status": "error", "message": "taskId is required to delete a task" })
@@ -100,7 +107,7 @@ export class TaskController {
         const {
             taskId = undefined,
             userId = undefined,
-        } = req.body
+        } = req.params
         if (!taskId) {
             return res.status(400).json({ "status": "error", "message": "taskId is required to delete a task" })
         }
