@@ -148,7 +148,10 @@ export class TaskController {
         return res.status(200).json({ "status": "success", "message": "Assignment deleted succesfully" })
     }
     async getAll(req, res) {
-        const tasks = await Task.findAll()
+        const tasks = await Task.findAll({
+            attributes: ['id', 'idCreator', 'title', 'description', 'status', 'deadline', 'priority'],
+            raw: false,
+        })
         res.status(200).json(tasks)
     }
     async getOne(req, res) {
