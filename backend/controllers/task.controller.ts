@@ -30,6 +30,13 @@ export class TaskController {
                 "message": `Provide at least one of ${Object.keys({ title, idCreator }).join(', ')}`,
             });
         }
+        const user = await User.findByPk(idCreator);
+        if(!user){
+          return res.status(400).json({
+                "status": "Missing Non-optional Params",
+                "message": `Provide at least one of ${Object.keys({ title, idCreator }).join(', ')}`,
+            });
+        }
         const task = await Task.create({ idCreator, title });
         const validParams = Object.fromEntries(Object.entries(req.body).filter(([_, value]) => value !== undefined));
         if(Object.keys(validParams).length !=0){
