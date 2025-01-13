@@ -8,15 +8,15 @@ const taskController = new TaskController();
 router.get('/id/:id', authorize([UserType.ADMIN]), taskController.getOne.bind(taskController))
 router.get('/owned/:id', authorize([UserType.MANAGER, UserType.ADMIN]), taskController.getOneOwned)
 router.get('/all', authorize([UserType.ADMIN]), taskController.getAll.bind(taskController))
-router.get('/allOwned', authorize(), taskController.getAllOwned.bind(taskController))
+router.get('/allOwned/:idUser', authorize(), taskController.getAllOwned.bind(taskController))
 
-router.post('/create', authorize([UserType.MANAGER, UserType.ADMIN]), taskController.create.bind(taskController))
-router.post('/assign', authorize([UserType.MANAGER, UserType.ADMIN]), taskController.assign.bind(taskController))
+router.post('/create/:idCreator/:title/:description?/:status?', authorize([UserType.MANAGER, UserType.ADMIN]), taskController.create.bind(taskController))
+router.post('/assign/:idTask/:idUser', authorize([UserType.MANAGER, UserType.ADMIN]), taskController.assign.bind(taskController))
 
-router.patch('/alter', authorize([UserType.MANAGER, UserType.ADMIN]), taskController.alter.bind(taskController))
+router.patch('/alter/:id/:title?/:description?/:status?', authorize([UserType.MANAGER, UserType.ADMIN]), taskController.alter.bind(taskController))
+router.patch('/deassign/:idTask/:idUser', authorize([UserType.MANAGER, UserType.ADMIN]), taskController.deassign.bind(taskController))
 
-router.delete('/deassign', authorize([UserType.MANAGER, UserType.ADMIN]), taskController.deassign.bind(taskController))
-router.delete('/delete', authorize([UserType.MANAGER, UserType.ADMIN]), taskController.del.bind(taskController))
+router.delete('/delete/:idTask', authorize([UserType.MANAGER, UserType.ADMIN]), taskController.del.bind(taskController))
 
 export default router
 
