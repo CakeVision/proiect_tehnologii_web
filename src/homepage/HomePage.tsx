@@ -342,6 +342,40 @@ const HomePage: React.FC = () => {
         return task.title.toLowerCase().includes(searchQuery.toLowerCase());
     });
 
+
+    const handleManageEmployees = async (selectedEmployees: string[]) => {
+        const refreshToken = localStorage.getItem("refreshToken");
+        const userId = localStorage.getItem("userId");
+        
+        if (!refreshToken || !userId) {
+            setError("User is not logged in.");
+            return;
+        }
+
+        //!!! PENTRU CODO --> FA AICI API-UL PENTRU MANAGERII 
+        try {
+            //SCHIMBA AICI URL-UL SI LOGICA DE CARE AI NEVOIE
+            const response = await fetch(`${baseApiURL}/`, {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                    Authorization: `Bearer ${refreshToken}`,
+                    "Access-Control-Allow-Origin": "*",
+                },
+                body: JSON.stringify({ managedUsers: selectedEmployees }),
+            });
+
+            if (!response.ok) {
+                throw new Error("Failed to update managed employees");
+            }
+
+            setManagedUsers(selectedEmployees);
+        } catch (err: any) {
+            setError(err.message || "An error occurred while updating managed employees.");
+        }
+    };
+
+
     const tasksForSelectedUser = creatorFilter === "all" ? tasks.length : tasks.filter(task => task.idCreator.toString() === creatorFilter).length;
     const activeTasksCount = checkedTasks.size;
 
@@ -367,6 +401,7 @@ const HomePage: React.FC = () => {
                     activeTasks={activeTasksCount}
                     onBurgerClick={() => setSidebarVisible(!sidebarVisible)}
                     onCreateTask={() => setIsCreateModalOpen(true)}
+                    onManageEmployees={handleManageEmployees}
                 />
                 <TaskList
                     tasks={filteredTasks}
