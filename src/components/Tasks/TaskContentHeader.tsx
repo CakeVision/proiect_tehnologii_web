@@ -51,6 +51,8 @@ const ContentHeader: React.FC<ContentHeaderProps> = ({
         }
     };
 
+    //FIXME: PENTRU DEBUG AM PUS CA BUTONUL SA SE VADA SI PENTRU ADMINI
+    //DA REMOVE LA LINIA 87 LA || 'Administrator' ca sa faci sa apara doar pentru manageri
     return (
         <div className="w-full">
             <div className="max-w-screen mx-auto">
@@ -82,7 +84,7 @@ const ContentHeader: React.FC<ContentHeaderProps> = ({
                                         Create Task
                                     </button>
                                 )}
-                                {userType === "Manager" && (
+                                {userType === "Manager" || "Administrator" && (
                                     <button
                                         onClick={() => setIsManageModalOpen(true)}
                                         className="px-4 py-2 bg-green-500 text-white rounded-md hover:bg-green-600 transition-colors"

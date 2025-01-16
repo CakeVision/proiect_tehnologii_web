@@ -60,9 +60,10 @@ const ManageEmployeesModal = ({ isOpen, onClose, onSave, creators }: ManageEmplo
                                 />
                                 <label 
                                     htmlFor={`employee-${employee.id}`}
-                                    className="text-gray-200 cursor-pointer"
+                                    className="text-gray-200 cursor-pointer flex justify-between items-center w-full"
                                 >
-                                    {employee.name}
+                                    <span>{employee.name}</span>
+                                    <span className="text-gray-400">ID: {employee.id}</span>
                                 </label>
                             </div>
                         ))}

@@ -352,7 +352,7 @@ const HomePage: React.FC = () => {
             return;
         }
 
-        //!!! PENTRU CODO --> FA AICI API-UL PENTRU MANAGERII 
+        //FIXME: PENTRU CODO --> FA AICI API-UL PENTRU MANAGERII 
         try {
             //SCHIMBA AICI URL-UL SI LOGICA DE CARE AI NEVOIE
             const response = await fetch(`${baseApiURL}/`, {
