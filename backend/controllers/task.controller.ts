@@ -12,35 +12,35 @@ const buildParamDict = (fields: Record<string, any>) =>
 export class TaskController {
     async create(req, res) {
         const {
-            title ,
+            title,
             idCreator,
 
         } = req.params;
         const {
             description = undefined,
-            status= undefined,
-            deadline= undefined,
-            priority= undefined,
+            status = undefined,
+            deadline = undefined,
+            priority = undefined,
         } = req.body
-        
+
         const validParamCount = Object.values(req.params).filter(param => param != null).length;
         if (validParamCount < 2) {
-          return res.status(400).json({
+            return res.status(400).json({
                 "status": "Missing Non-optional Params",
                 "message": `Provide at least one of ${Object.keys({ title, idCreator }).join(', ')}`,
             });
         }
         const user = await User.findByPk(idCreator);
-        if(!user){
-          return res.status(400).json({
+        if (!user) {
+            return res.status(400).json({
                 "status": "Missing Non-optional Params",
                 "message": `Provide at least one of ${Object.keys({ title, idCreator }).join(', ')}`,
             });
         }
         const task = await Task.create({ idCreator, title });
         const validParams = Object.fromEntries(Object.entries(req.body).filter(([_, value]) => value !== undefined));
-        if(Object.keys(validParams).length !=0){
-            task.update({description, status, deadline, priority})
+        if (Object.keys(validParams).length != 0) {
+            task.update({ description, status, deadline, priority })
         }
         return res.status(200).json({
             "message": `Creation Succesful`,
@@ -52,12 +52,12 @@ export class TaskController {
         const {
             idTask,
         } = req.params;
-         const {
-            title =undefined,
+        const {
+            title = undefined,
             description = undefined,
-            status= undefined,
-            deadline= undefined,
-            priority= undefined,
+            status = undefined,
+            deadline = undefined,
+            priority = undefined,
         } = req.body
         const params = buildParamDict(req.params)
         const validParamCount = Object.values(params).filter(param => param != null).length;
@@ -67,7 +67,7 @@ export class TaskController {
                 "message": `Provide at least one of ${Object.keys({ title, idCreator }).join(', ')}`,
             });
         }
-        
+
         const validBodyParams = Object.fromEntries(Object.entries(req.body).filter(([_, value]) => value !== undefined));
         const task = await Task.findByPk(idTask)
         if (!task) {
@@ -92,11 +92,11 @@ export class TaskController {
     }
     async assign(req, res) {
         const {
-            idTask ,
-            idUser ,
+            idTask,
+            idUser,
         } = req.params
         const validParamCount = Object.values(req.params).filter(param => param != null).length;
-        if (validParamCount <2) {
+        if (validParamCount < 2) {
             return res.status(400).json({
                 "status": "Missing Params",
                 "message": `Provide at least one of ${Object.keys({ title, idCreator }).join(', ')}`,
@@ -104,7 +104,7 @@ export class TaskController {
         }
 
         //TODO: Refactor into error function
-        if (!idTask && idTask !=1) {
+        if (!idTask && idTask != 1) {
             return res.status(400).json({ "status": "error", "message": "taskId is required to delete a task" })
         }
         if (!idUser && idUser != 1) {
@@ -124,11 +124,11 @@ export class TaskController {
     }
     async deassign(req, res) {
         const {
-            idTask ,
-            idUser ,
+            idTask,
+            idUser,
         } = req.params
         const validParamCount = Object.values(req.params).filter(param => param != null).length;
-        if (validParamCount <2) {
+        if (validParamCount < 2) {
             return res.status(400).json({
                 "status": "Missing Params",
                 "message": `Provide at least one of ${Object.keys({ title, idCreator }).join(', ')}`,
@@ -136,13 +136,13 @@ export class TaskController {
         }
 
         //TODO: Refactor into error function
-        if (!idTask && idTask !=1) {
+        if (!idTask && idTask != 1) {
             return res.status(400).json({ "status": "error", "message": "taskId is required to delete a task" })
         }
         if (!idUser && idUser != 1) {
             return res.status(400).json({ "status": "error", "message": "userId is required to delete a task" })
         }
-        const assignment = await Assignment.findOne({ where: { userId:idUser, taskId:idTask } })
+        const assignment = await Assignment.findOne({ where: { userId: idUser, taskId: idTask } })
         if (!assignment) {
             return res.status(400).json({ "status": "error", "message": `Assignment with key (${userId},${taskId}) doesnt exist` })
         }
@@ -155,7 +155,7 @@ export class TaskController {
         return res.status(200).json({ "status": "success", "message": "Assignment deleted succesfully" })
     }
     async getAll(req, res) {
-        const tasks = await  Task.findAll();
+        const tasks = await Task.findAll();
         res.status(200).json(tasks)
     }
     async getOne(req, res) {
@@ -205,5 +205,18 @@ export class TaskController {
         const tasks = await user.getUserTasks();
 
         res.status(200).json(tasks)
+    }
+    async getManagerTasks(req, res) {
+        const id = req.params.id;
+        const tasks = await Task.findAll({
+            where: {
+                idCreator: id,
+            }
+        })
+        if (!tasks) {
+            return res.status(400).json({ "status": "error", "message": "manager did not create any tasks" })
+        }
+        res.status(200).json(tasks)
+
     }
 }

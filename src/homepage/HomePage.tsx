@@ -114,7 +114,8 @@ const HomePage: React.FC = () => {
                     filteredTasks = data;
                 }
                 else if (storedUserType === "Manager") {
-                    const response = await fetch(baseApiURL + `/tasks/allOwned/${userId}`, {
+                    console.log('1')
+                    const response = await fetch(baseApiURL + `/tasks/managerTasks/${userId}`, {
                         method: "GET",
                         headers: {
                             "Content-Type": "application/json",
@@ -148,7 +149,7 @@ const HomePage: React.FC = () => {
                 return;
             }
 
-            if (userType !== "Administrator") {
+            if (userType === "Executor") {
                 console.log("Non-administrator user. Skipping fetchUsers.");
                 return;
             }
@@ -181,6 +182,7 @@ const HomePage: React.FC = () => {
 
         fetchUsers();
     }, []);
+
 
     const handleTaskClick = (task: Task) => {
         setSelectedTask(task);
@@ -354,7 +356,7 @@ const HomePage: React.FC = () => {
         //FIXME: PENTRU CODO --> FA AICI API-UL PENTRU MANAGERII 
         try {
             //SCHIMBA AICI URL-UL SI LOGICA DE CARE AI NEVOIE
-            const response = await fetch(`${baseApiURL}/managerChange/${userId}`, {
+            const response = await fetch(`${baseApiURL}/users/managerChange/${userId}`, {
                 method: "PATCH",
                 headers: {
                     "Content-Type": "application/json",

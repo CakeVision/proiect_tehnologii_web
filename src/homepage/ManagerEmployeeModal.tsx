@@ -34,7 +34,7 @@ const ManageEmployeesModal = ({ isOpen, onClose, onSave, creators }: ManageEmplo
 
     return (
         <div className="fixed inset-0 flex items-center justify-center z-50">
-            <div className="bg-[#232323] rounded-lg p-6 max-w-2xl w-full mx-4 border border-gray-300">
+            <div className="bg-[#232323] rounded-lg p-6 max-w-2xl w-full mx-4 border order-gray-300">
                 <div className="flex justify-between items-center mb-4">
                     <h2 className="text-xl font-bold text-gray-200">Manage Employees</h2>
                     <button
@@ -47,8 +47,8 @@ const ManageEmployeesModal = ({ isOpen, onClose, onSave, creators }: ManageEmplo
                 <div className="space-y-4">
                     <div className="max-h-96 overflow-y-auto">
                         {creators.map(employee => (
-                            <div 
-                                key={employee.id} 
+                            <div
+                                key={employee.id}
                                 className="flex items-center p-2 hover:bg-[#333333] rounded-md"
                             >
                                 <input
@@ -58,7 +58,7 @@ const ManageEmployeesModal = ({ isOpen, onClose, onSave, creators }: ManageEmplo
                                     onChange={() => handleEmployeeToggle(employee.id)}
                                     className="mr-3"
                                 />
-                                <label 
+                                <label
                                     htmlFor={`employee-${employee.id}`}
                                     className="text-gray-200 cursor-pointer flex justify-between items-center w-full"
                                 >
