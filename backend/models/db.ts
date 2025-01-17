@@ -12,38 +12,20 @@ dotenv.config();
 
 
 console.log("Hello")
-//const sequelize = new Sequelize(process.env.DATABASE_URL || '', {
-//  dialect: 'postgres',
-//  dialectOptions: {
-//    ssl: {
-//      require: true,
-//      rejectUnauthorized: true
-//    }
-//  },
-//  logging: (msg) => console.log(`Sequelize: ${msg}`),
-//  define: {
-//    timestamps: true
-//  }
-//});
-const config = {
-  database: 'taskappdb',
-  username: 'postgres',
-  password: undefined,
-  host: 'localhost', // or your database host
-  port: 5432, // default PostgreSQL port
-};
-
-const sequelize = new Sequelize(
-  config.database,
-  config.username,
-  config.password,
-  {
-    host: config.host,
-    port: config.port,
-    dialect: 'postgres',
-    logging: (msg) => console.log(`Sequelize: ${msg}`),
+const sequelize = new Sequelize(process.env.DATABASE_URL || '', {
+  dialect: 'postgres',
+  dialectOptions: {
+    ssl: {
+      require: true,
+      rejectUnauthorized: true
+    }
+  },
+  logging: (msg) => console.log(`Sequelize: ${msg}`),
+  define: {
+    timestamps: true
   }
-)
+});
+
 
 async function generateTokens(user: User) {
   const accessToken = jwt.sign(
