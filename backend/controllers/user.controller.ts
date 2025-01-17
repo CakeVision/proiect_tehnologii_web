@@ -121,7 +121,7 @@ export class UserController {
 
         return res.status(200).json({
             "status": "Success",
-            "message": "User updated successfully",
+            "message": "User modified successfully",
             "result": user.toPublicJSON()
         });
     }
@@ -146,7 +146,7 @@ export class UserController {
         }
         return res.status(204).json();
     }
-    async getManagedUsers(req,res) {
+    async getManagedUsers(req, res) {
         const id: number = Number(req.params.id)
         if (!id || id < 0) {
             return res.status(400).json({
@@ -156,21 +156,69 @@ export class UserController {
         }
         const users = await User.findAll(
             {
-                where:{
+                where: {
                     "managerId": id
                 }
             }
         )
-        if(!users){
+        if (!users) {
+            return res.status(404).json({
+                "status": "Error",
+                "message": `Id: ${id}, not in db`,
+
+            })
+        }
+        return res.status(200).json({
+            "status": "Success",
+            "message": "Managed Users found",
+            "result": users,
+        })
+    }
+    async changeManager(req, res) {
+        const id: number = Number(req.params.id);
+        if (!id || id < 0) {
+            return res.status(400).json({
+                "status": "Error",
+                "message": "Invalid user ID"
+            });
+        }
+        const user = await User.findByPk(id);
+        if (!user) {
             return res.status(404).json({
                 "status": "Error",
                 "message": `Id: ${id}, not in db`,
             })
         }
+        const idsToChange: string = req.body.users;
+        if (!idsToChange) {
+            return res.status(400).json({
+                "status": "Missing Params",
+                "message": `Provide at least one userId for this req`,
+            });
+        }
+        console.log("idsToChange: " + idsToChange)
+        const idArr: string[] = stringToArray(idsToChange)
+        console.log("idArr" + idArr)
+        const numIds: number[] = idArr
+            .map(str => Number(str))
+            .filter(num => !isNaN(num));
+        console.log("Id_Arr:" + idArr)
+        const nrChanged = await User.update({ managerId: id }, {
+            where: {
+                id: {
+                    [Op.in]: numIds,
+                }
+            }
+        });
+        if (nrChanged[0] != numIds.length) {
+            return res.status(500).json({
+                "status": "Internal server error",
+                "message": `The count of processed ids != ids modified, best to resend the req `,
+            });
+        }
         return res.status(200).json({
-            "status": "Success",
-            "message": "User updated successfully",
-            "result":users,
-        })
+            "status": "Success:",
+            "message": `Modified ${numIds.length} users `,
+        });
     }
 }

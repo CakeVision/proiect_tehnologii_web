@@ -63,7 +63,7 @@ const UsersPage: React.FC = () => {
         }
 
         try {
-            const response = await fetch(`${baseApiURL}/users/${updatedUser.id}`, {
+            const response = await fetch(`${baseApiURL}/users/modify/${updatedUser.id}`, {
                 method: "PATCH",
                 headers: {
                     "Content-Type": "application/json",
