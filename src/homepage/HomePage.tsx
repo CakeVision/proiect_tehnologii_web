@@ -196,6 +196,7 @@ const HomePage: React.FC = () => {
 
     const handleTaskSave = async (updatedTask: Task) => {
         const refreshToken = localStorage.getItem("refreshToken");
+        const userId = localStorage.getItem("userId");
         if (!refreshToken) {
             setError("User is not logged in.");
             return;
@@ -220,6 +221,23 @@ const HomePage: React.FC = () => {
                 task.id === updatedTask.id ? updatedTask : task
             ));
             setIsModalOpen(false);
+            console.log('1')
+            const refreshTasks = await fetch(baseApiURL + `/tasks/managerTasks/${userId}`, {
+                method: "GET",
+                headers: {
+                    "Content-Type": "application/json",
+                    Authorization: `Bearer ${refreshToken}`,
+                    "Access-Control-Allow-Origin": "*",
+                },
+            });
+
+            if (!response.ok) {
+                throw new Error("Failed to fetch tasks.");
+            }
+
+            const data = await refreshTasks.json();
+            setTasks(data);
+
         } catch (err: any) {
             setError(err.message || "An error occurred while updating the task.");
         }
