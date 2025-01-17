@@ -7,7 +7,7 @@ const router = express.Router();
 const userController = new UserController();
 
 // Get all users
-router.get('/', authorize([UserType.ADMIN]), userController.getAll.bind(userController));
+router.get('/', authorize([UserType.ADMIN, UserType.MANAGER]), userController.getAll.bind(userController));
 // Get user by ID
 router.get('/:ids', authorize(), userController.getById.bind(userController));
 
