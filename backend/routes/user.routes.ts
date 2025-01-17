@@ -12,7 +12,7 @@ router.get('/', authorize([UserType.ADMIN]), userController.getAll.bind(userCont
 router.get('/:ids', authorize(), userController.getById.bind(userController));
 
 //getUsers where id = managedId
-router.get('/manager/:id', authorize(), userController.getManagedUsers.bind(userController));
+router.get('/managed/:id', authorize(), userController.getManagedUsers.bind(userController));
 // Create a new user
 router.post('/', authorize([UserType.MANAGER, UserType.ADMIN]), userController.createUser.bind(userController));
 
