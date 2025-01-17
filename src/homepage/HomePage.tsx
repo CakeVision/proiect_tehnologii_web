@@ -361,7 +361,7 @@ const HomePage: React.FC = () => {
                     Authorization: `Bearer ${refreshToken}`,
                     "Access-Control-Allow-Origin": "*",
                 },
-                body: JSON.stringify({ users: selectedEmployees }),
+                body: JSON.stringify({ users: selectedEmployees.join(',') }),
             });
 
             if (!response.ok) {
