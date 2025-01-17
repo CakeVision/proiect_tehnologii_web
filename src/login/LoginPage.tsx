@@ -46,8 +46,8 @@ const LoginPage: React.FC = () => {
 
     return (
         <div style={{ position: "absolute", top: "50%", left: "50%", transform: "translate(-50%, -50%)" }}>
-            <h1 className="text-2xl font-bold text-gray-200">Task Management</h1>
-            <p className="text-sm text-gray-200 mt-1 mb-4">Manage and track your team's tasks</p>
+            <h1 className="text-2xl font-bold text-gray-200">JIRØFAR</h1>
+            <p className="text-sm text-gray-200 mt-1 mb-4">Def not a  jira clone</p>
 
             <div style={{ maxWidth: "400px", margin: "auto", padding: "16px", border: "1px solid #ddd", borderRadius: "5px" }}>
                 <h2>Login</h2>

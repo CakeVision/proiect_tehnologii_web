@@ -114,7 +114,6 @@ const HomePage: React.FC = () => {
                     filteredTasks = data;
                 }
                 else if (storedUserType === "Manager") {
-                    console.log('1')
                     const response = await fetch(baseApiURL + `/tasks/managerTasks/${userId}`, {
                         method: "GET",
                         headers: {
@@ -295,7 +294,7 @@ const HomePage: React.FC = () => {
                 task: createdTask,
                 success: true
             };
-
+            console.log('1')
             console.log(createdTask)
             const createdTaskId = createdTask['task']['id']
 
@@ -311,8 +310,9 @@ const HomePage: React.FC = () => {
             });
 
 
+            console.log('2')
 
-            setTasks([...tasks, createdTask]);
+            setTasks([...tasks, createdTask.task]);
             // setIsCreateModalOpen(false);
             return taskResponse;
         } catch (err: any) {
