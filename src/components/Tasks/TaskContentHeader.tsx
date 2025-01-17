@@ -84,7 +84,7 @@ const ContentHeader: React.FC<ContentHeaderProps> = ({
                                         Create Task
                                     </button>
                                 )}
-                                {userType === "Manager" && (
+                                {(userType === "Manager") && (
                                     <button
                                         onClick={() => setIsManageModalOpen(true)}
                                         className="px-4 py-2 bg-green-500 text-white rounded-md hover:bg-green-600 transition-colors"
