@@ -354,14 +354,14 @@ const HomePage: React.FC = () => {
         //FIXME: PENTRU CODO --> FA AICI API-UL PENTRU MANAGERII 
         try {
             //SCHIMBA AICI URL-UL SI LOGICA DE CARE AI NEVOIE
-            const response = await fetch(`${baseApiURL}/managed/${userId}`, {
-                method: "POST",
+            const response = await fetch(`${baseApiURL}/managerChange/${userId}`, {
+                method: "PATCH",
                 headers: {
                     "Content-Type": "application/json",
                     Authorization: `Bearer ${refreshToken}`,
                     "Access-Control-Allow-Origin": "*",
                 },
-                body: JSON.stringify({ managedUsers: selectedEmployees }),
+                body: JSON.stringify({ users: selectedEmployees }),
             });
 
             if (!response.ok) {
